@@ -17,4 +17,7 @@ export default Footer;
 const StFooter = styled.footer`
   ${() => RowCenter}
   height: 50px;
+  background-color: #caadff;
+  font-size: 0.8rem;
+  color: white;
 `;
