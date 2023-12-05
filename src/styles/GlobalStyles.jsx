@@ -5,22 +5,10 @@ export const GlobalStyle = createGlobalStyle`
    v2.0 | 20110126
    License: none (public domain)
 */
-  @font-face {
-    font-family: 'SUITE-Regular';
-    src: url('../assets/fonts/Sun-Suite-font/SUITE-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: 'SUITE-Bold';
-    src: url('../assets/fonts/Sun-Suite-font/SUITE-Bold.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-  }
 
   * {
     box-sizing: border-box;
+    font-family: SUITE-Regular, sans-serif;
 
     &::-webkit-scrollbar {
       width: 10px;
@@ -67,7 +55,6 @@ export const GlobalStyle = createGlobalStyle`
     -o-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
     background-size: cover;
-    font-family: SUITE-Regular, sans-serif;
   }
 
   ol, ul {
