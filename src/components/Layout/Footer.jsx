@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {RowCenter} from '../../styles/CommonStyles';
+import theme from 'styles/theme';
 
 const Footer = () => {
   return (
@@ -17,7 +18,7 @@ export default Footer;
 const StFooter = styled.footer`
   ${() => RowCenter}
   height: 50px;
-  background-color: #caadff;
-  font-size: 0.8rem;
+  font-size: ${theme.FONT_SIZE.sm};
   color: white;
+  background-color: ${theme.COLOR.purple};
 `;
