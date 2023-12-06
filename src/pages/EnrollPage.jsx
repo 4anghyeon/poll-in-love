@@ -13,9 +13,14 @@ export class Poll {
   constructor() {
     this.id = uuidv4();
     this.question = '';
-    this.type = 'input';
+    this.type = Poll.TYPE.INPUT;
     this.answers = [];
   }
+
+  static TYPE = {
+    INPUT: 'input',
+    SELECT: 'select',
+  };
 }
 
 const EnrollPage = () => {
@@ -38,8 +43,20 @@ const EnrollPage = () => {
       </StContentContainer>
 
       <StButtonContainer>
-        {nowForm === SUBMIT ? <Button onClick={onClickPreviousForm}>이전</Button> : <div></div>}
-        {nowForm === WRITE ? <Button onClick={onClickNextForm}>다음</Button> : <div></div>}
+        {nowForm === SUBMIT ? (
+          <Button onClick={onClickPreviousForm} $bgColor={theme.COLOR.pink}>
+            이전
+          </Button>
+        ) : (
+          <div></div>
+        )}
+        {nowForm === WRITE ? (
+          <Button onClick={onClickNextForm} $bgColor={theme.COLOR.pink}>
+            다음
+          </Button>
+        ) : (
+          <div></div>
+        )}
       </StButtonContainer>
     </StEnrollContainer>
   );
@@ -59,7 +76,7 @@ const StContentContainer = styled.section`
   width: 100%;
   height: 100%;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 
   & > div {
     transform: translateX(${({$nowForm}) => ($nowForm === WRITE ? '0' : '-100%')});
