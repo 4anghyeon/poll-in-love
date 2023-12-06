@@ -29,13 +29,14 @@ const StThumbnailContainer = styled.div`
   }
 
   & figure {
-    width: 70%;
+    width: 50%;
     text-align: center;
     ${ColumnCenter}
   }
 
   & img {
     border: 1px solid ${theme.COLOR.pink};
+    border-radius: 10px 10px 0 0;
     width: 100%;
   }
 

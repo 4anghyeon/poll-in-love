@@ -20,5 +20,6 @@ const Layout = () => {
 export default Layout;
 
 const StContent = styled.section`
-  ${() => RowCenter}
+  ${RowCenter};
+  min-height: calc(100vh - 100px);
 `;
