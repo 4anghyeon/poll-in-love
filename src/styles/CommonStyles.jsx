@@ -8,11 +8,13 @@ export const RowCenter = css`
 `;
 
 export const ColumnCenter = css`
-  ${() => RowCenter}
+  ${RowCenter};
   flex-direction: column;
 `;
 
 export const Button = styled.button`
+  display: flex;
+  align-items: center;
   cursor: pointer;
   border: 1px solid lightgrey;
   border-radius: 5px;
@@ -22,4 +24,21 @@ export const Button = styled.button`
   font-size: 1.1rem;
   padding: 10px;
   width: fit-content;
+  ${props => {
+    if (props.disabled) {
+      return css`
+        background-color: lightgrey;
+        cursor: default;
+      `;
+    }
+  }}
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 20px;
+  height: 60px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid ${() => theme.COLOR.lightPink};
 `;

@@ -2,16 +2,21 @@ import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from '../../../styles/CommonStyles';
 import PollFormBox from './PollFormBox';
-import {Poll} from '../../../pages/EnrollPage';
+import {addQuestion} from '../../../redux/modules/enrollSlice';
+import {useDispatch, useSelector} from 'react-redux';
 
 // 설문조사 생성
-const WritePollContainer = ({questions, setQuestions}) => {
+const WritePollContainer = () => {
   const containerRef = useRef(null);
+  const {questions} = useSelector(state => state.enroll);
+  const dispatch = useDispatch();
 
+  // 질문 추가 버튼 클릭
   const onClickAddQuestion = () => {
-    setQuestions(prev => [...prev, new Poll()]);
+    dispatch(addQuestion());
   };
 
+  // 질문 목록이 늘어날 때 스크롤 맨 아래로
   useEffect(() => {
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
   }, [questions.length]);
@@ -19,11 +24,7 @@ const WritePollContainer = ({questions, setQuestions}) => {
   return (
     <StContainer ref={containerRef}>
       {questions.map((q, i) => {
-        return (
-          <PollFormBox key={q.id} index={i + 1} question={q} setQuestions={setQuestions}>
-            <input placeholder={'질문을 입력해 주세요'} />
-          </PollFormBox>
-        );
+        return <PollFormBox key={q.id} index={i + 1} question={q} />;
       })}
       <StAddButton onClick={onClickAddQuestion}>질문 추가</StAddButton>
     </StContainer>
@@ -43,6 +44,5 @@ const StContainer = styled.div`
 `;
 
 const StAddButton = styled(Button)`
-  width: 100px;
   padding: 10px;
 `;
