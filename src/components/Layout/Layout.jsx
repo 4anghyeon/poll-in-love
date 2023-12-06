@@ -21,5 +21,4 @@ export default Layout;
 
 const StContent = styled.section`
   ${() => RowCenter}
-  height: calc(100vh - 100px);
 `;
