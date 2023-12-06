@@ -1,29 +1,16 @@
 import React, {useEffect} from 'react';
-import {v4 as uuidv4} from 'uuid';
 import UserAnswerInputRow from './UserAnswerInputRow';
 import styled from 'styled-components';
 import {Button} from '../../../styles/CommonStyles';
+import {addRowQuestionAnswer} from '../../../redux/modules/enrollSlice';
+import {useDispatch} from 'react-redux';
 
-class UserAnswer {
-  constructor() {
-    this.id = uuidv4();
-    this.answer = '';
-  }
-}
-
-const UserAnswerFormBox = ({question, setQuestions}) => {
+const UserAnswerFormBox = ({question, index}) => {
   const {answers} = question;
+  const dispatch = useDispatch();
 
   const addUserAnswer = () => {
-    setQuestions(prev => {
-      return prev.map(q => {
-        if (q.id !== question.id) return q;
-        return {
-          ...q,
-          answers: [...q.answers, new UserAnswer()],
-        };
-      });
-    });
+    dispatch(addRowQuestionAnswer({index}));
   };
 
   useEffect(() => {
@@ -35,7 +22,7 @@ const UserAnswerFormBox = ({question, setQuestions}) => {
   return (
     <>
       {answers.map((answer, i) => (
-        <UserAnswerInputRow key={answer.id} index={i} question={question} setQuestions={setQuestions} />
+        <UserAnswerInputRow key={answer.id} index={index} answerIndex={i} />
       ))}
       <StAddAnswerButton onClick={addUserAnswer}>답변 추가</StAddAnswerButton>
     </>

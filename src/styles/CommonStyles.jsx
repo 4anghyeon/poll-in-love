@@ -13,6 +13,8 @@ export const ColumnCenter = css`
 `;
 
 export const Button = styled.button`
+  display: flex;
+  align-items: center;
   cursor: pointer;
   border: 1px solid lightgrey;
   border-radius: 5px;

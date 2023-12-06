@@ -1,26 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from '../styles/CommonStyles';
 import WritePollContainer from '../components/Enroll/WritePoll/WritePollContainer';
 import SubmitPollContainer from '../components/Enroll/SubmitPoll/SubmitPollContainer';
-import {v4 as uuidv4} from 'uuid';
 import theme from '../styles/theme';
+import {useDispatch} from 'react-redux';
+import {init} from '../redux/modules/enrollSlice';
+import {SlArrowLeft, SlArrowRight} from 'react-icons/sl';
 
 const SUBMIT = 'submit';
 const WRITE = 'write';
 
-export class Poll {
-  constructor() {
-    this.id = uuidv4();
-    this.question = '';
-    this.type = 'input';
-    this.answers = [];
-  }
-}
-
 const EnrollPage = () => {
   const [nowForm, setNowForm] = useState(WRITE);
-  const [questions, setQuestions] = useState([new Poll()]);
+  const dispatch = useDispatch();
 
   const onClickNextForm = () => {
     setNowForm(SUBMIT);
@@ -30,16 +23,35 @@ const EnrollPage = () => {
     setNowForm(WRITE);
   };
 
+  useEffect(() => {
+    // 등록 페이지로 들어오면 Form 전부 초기화
+    dispatch(init());
+  }, []);
+
   return (
     <StEnrollContainer>
       <StContentContainer $nowForm={nowForm}>
-        <WritePollContainer questions={questions} setQuestions={setQuestions} />
+        <WritePollContainer />
         <SubmitPollContainer />
       </StContentContainer>
 
       <StButtonContainer>
-        {nowForm === SUBMIT ? <Button onClick={onClickPreviousForm}>이전</Button> : <div></div>}
-        {nowForm === WRITE ? <Button onClick={onClickNextForm}>다음</Button> : <div></div>}
+        {nowForm === SUBMIT ? (
+          <Button onClick={onClickPreviousForm} $bgColor={theme.COLOR.pink}>
+            <SlArrowLeft />
+            이전
+          </Button>
+        ) : (
+          <div></div>
+        )}
+        {nowForm === WRITE ? (
+          <Button onClick={onClickNextForm} $bgColor={theme.COLOR.pink}>
+            다음
+            <SlArrowRight />
+          </Button>
+        ) : (
+          <div></div>
+        )}
       </StButtonContainer>
     </StEnrollContainer>
   );
@@ -59,7 +71,7 @@ const StContentContainer = styled.section`
   width: 100%;
   height: 100%;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
 
   & > div {
     transform: translateX(${({$nowForm}) => ($nowForm === WRITE ? '0' : '-100%')});
