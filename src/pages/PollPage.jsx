@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {ColumnCenter} from '../styles/CommonStyles';
+import {Button, ColumnCenter} from '../styles/CommonStyles';
 import theme from '../styles/theme';
 import QuestionBox from '../components/Poll/QuestionBox';
 
@@ -17,7 +17,11 @@ const fakeData = {
       id: '1234',
       question: '다음 메뉴 중에서',
       type: 'select',
-      answers: ['떡볶이', '만두', '라면'],
+      answers: [
+        {id: '123213', answer: '떡볶이'},
+        {id: '1asd23213', answer: '라면'},
+        {id: '1232asd13', answer: '김밥'},
+      ],
     },
   ],
   writer: '이상현',
@@ -43,6 +47,7 @@ const PollPage = () => {
             <QuestionBox key={question.id} index={index} question={question} />
           ))}
         </StQuestionContainer>
+        <StSubmitButton>제출</StSubmitButton>
       </StPollContainer>
     </StPollPageContainer>
   );
@@ -93,4 +98,9 @@ const StProgressBar = styled.div`
 
 const StQuestionContainer = styled.div`
   margin-top: 20px;
+`;
+
+const StSubmitButton = styled(Button)`
+  width: 100%;
+  justify-content: center;
 `;
