@@ -1,16 +1,23 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
-import {auth} from 'shared/firebase/firebase';
-import {onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
-import {toast} from 'react-toastify';
-import {ToastContainer} from 'react-toastify';
+import {auth, db, provider} from 'shared/firebase/firebase';
+import {signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
+import {addDoc, collection} from 'firebase/firestore';
+import logo from '../assets/images/logoImge.png';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from 'styles/theme';
+import {FaGoogle} from 'react-icons/fa';
+import {NavLink, useNavigate} from '../../node_modules/react-router-dom/dist/index';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const navigate = useNavigate();
+
   const onChangeValue = event => {
     const {
       target: {name, value},
@@ -18,30 +25,72 @@ const LoginPage = () => {
     if (name === 'email') setEmail(value);
     if (name === 'password') setPassword(value);
   };
-  const onClickLoginButton = async () => {
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError('이메일 아이디를 입력해주세요.');
+    } else if (!emailRegex.test(email)) {
+      setEmailError('올바른 이메일 형식이 아닙니다.');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const validatePassword = () => {
+    if (!password) {
+      setPasswordError('비밀번호를 입력해주세요.');
+    } else if (password.length < 6) {
+      setPasswordError('비밀번호는 6자 이상이어야 합니다.');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  const onClickLoginButton = async e => {
+    e.preventDefault();
+    validateEmail();
+    validatePassword();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('user with signIn', userCredential.user);
+      navigate('/');
     } catch (error) {
-      if (error.code === 'auth/invalid-credential') toast.error('이메일 또는 비밀번호가 일치하지 않습니다');
-      else if (error.code === 'auth/invalid-email') toast.error('이메일 주소가 유효하지 않습니다');
+      console.log(error);
     }
   };
-  const onClickGoogleLoginButton = () => {};
+
+  const onClickGoogleLoginButton = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log('Google Login Successful:', user);
+      const newUserObj = {
+        email: user.email,
+      };
+      const docRef = await addDoc(collection(db, 'users'), newUserObj);
+      navigate('/');
+      console.log('Document written with ID: ', docRef.id);
+    } catch (error) {
+      console.error('Google Login Error:', error.message);
+    }
+  };
 
   return (
     <StContainer>
-      <ToastContainer />
-      <StForm>
-        <h1>로그인</h1>
+      <StForm onSubmit={onClickLoginButton}>
+        <NavLink to="/">
+          <img src={logo} width={300} height={40} alt="logo" />
+        </NavLink>
         <input
-          placeholder="이메일을 입력하세요."
+          placeholder="이메일 아이디를 입력하세요."
           type="email"
           name="email"
           onChange={onChangeValue}
           value={email}
           required
+          onBlur={validateEmail}
         />
+        <span style={{color: 'red'}}>{emailError}</span>
         <input
           placeholder="비밀번호를 입력하세요."
           type="password"
@@ -49,31 +98,37 @@ const LoginPage = () => {
           onChange={onChangeValue}
           value={password}
           required
+          onBlur={validatePassword}
         />
+        <span style={{color: 'red'}}>{passwordError}</span>
+        <StButtons>
+          <StButton type="submit">로그인</StButton>
+          <StButton type="button" onClick={onClickGoogleLoginButton} $bgColor={theme.COLOR.pink}>
+            <span>
+              <FaGoogle />
+              ;구글 계정으로 로그인
+            </span>
+          </StButton>
+          <StButton type="button" onClick={() => navigate('/signup')}>
+            회원가입
+          </StButton>
+        </StButtons>
       </StForm>
-      <StButtons>
-        <StButton onClick={onClickLoginButton} disabled={!email || !password}>
-          로그인
-        </StButton>
-        <StButton onClick={onClickGoogleLoginButton}>
-          <img src="#" alt="googleIcon" />
-          <span>구글 계정으로 로그인</span>
-        </StButton>
-        <StButton>회원가입</StButton>
-      </StButtons>
     </StContainer>
   );
 };
 
 const StContainer = styled.div`
   ${ColumnCenter}
-  gap: 15px;
-  width: 40%;
-  border: 1px solid lightgrey;
+  width: 100vw;
+  height: 100vh;
+  background-color: whitesmoke;
 `;
 
-const StForm = styled.div`
+const StForm = styled.form`
+  width: 30%;
   ${ColumnCenter}
+  gap: 15px;
   h1 {
     font-size: ${theme.FONT_SIZE.xl};
   }
@@ -88,12 +143,15 @@ const StForm = styled.div`
 `;
 
 const StButtons = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: yellow;
+  ${ColumnCenter}
+  width: 100%;
+  gap: 10px;
+  margin-top: 15px;
 `;
-export default LoginPage;
 
 const StButton = styled(Button)`
   width: 100%;
+  ${RowCenter}
 `;
+
+export default LoginPage;

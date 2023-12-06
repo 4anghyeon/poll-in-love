@@ -21,4 +21,5 @@ export default Layout;
 
 const StContent = styled.section`
   ${() => RowCenter}
+  min-height: 90vh;
 `;
