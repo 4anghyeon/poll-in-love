@@ -6,12 +6,11 @@ import QuestionBox from '../components/Poll/QuestionBox';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {addParticipant, findParticipantByPollIdAndUserId} from '../api/participants';
 import {toast} from 'react-toastify';
-import {useLocation, useNavigate} from 'react-router-dom';
-import {BeatLoader, ClipLoader} from 'react-spinners';
+import {useLoaderData, useNavigate} from 'react-router-dom';
+import {BeatLoader} from 'react-spinners';
 
 const PollPage = () => {
-  const location = useLocation();
-  const {poll} = location.state;
+  const poll = useLoaderData();
   const [answer, setAnswer] = useState({...poll});
   const navigate = useNavigate();
 
@@ -29,7 +28,6 @@ const PollPage = () => {
     mutate: addAnswerMutation,
   } = useMutation({
     mutationFn: newParticipant => {
-      console.log(newParticipant);
       return addParticipant(newParticipant);
     },
   });
