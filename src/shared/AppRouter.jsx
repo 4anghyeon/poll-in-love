@@ -3,6 +3,8 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import HomePage from '../pages/HomePage';
 import EnrollPage from '../pages/EnrollPage';
+import LoginPage from 'pages/LoginPage';
+import SignUpPage from 'pages/SignUpPage';
 
 const AppRouter = () => {
   return (
@@ -11,9 +13,9 @@ const AppRouter = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<HomePage />}></Route>
           {/*회원가입*/}
-          <Route path="/signup" element={<HomePage />}></Route>
+          <Route path="/signup" element={<SignUpPage />}></Route>
           {/*로그인*/}
-          <Route path="/login" element={<HomePage />}></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
           {/*마이페이지*/}
           <Route path="/mypage" element={<HomePage />}></Route>
           {/*포인트 상점*/}
