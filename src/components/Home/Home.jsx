@@ -4,6 +4,7 @@ import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {FAKEDATA} from 'shared/mock';
 import {DEFAULT_IMAGE} from 'utils/defaultValue';
+import {Link} from '../../../node_modules/react-router-dom/dist/index';
 
 const Home = () => {
   return (
@@ -15,13 +16,15 @@ const Home = () => {
         {/* 포인트 많은 순서대로 구현예정 */}
         <StPickBox>
           {FAKEDATA.POLLS.map((poll, index) => (
-            <StPickCard key={index}>
-              <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
-              {/* 이메일 뒤에 두글자 빼고 보여주기 구현예정  */}
-              <StPickId> {poll.writer}</StPickId>
-              <StPickTitle>{poll.title}</StPickTitle>
-              <StPickPoint>{poll.point}p</StPickPoint>
-            </StPickCard>
+            <Link to={`/poll/${poll.id}`} key={index}>
+              <StPickCard>
+                <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
+                {/* 이메일 뒤에 두글자 빼고 보여주기 구현예정  */}
+                <StPickId> {poll.writer}</StPickId>
+                <StPickTitle>{poll.title}</StPickTitle>
+                <StPickPoint>{poll.point}p</StPickPoint>
+              </StPickCard>
+            </Link>
           ))}
         </StPickBox>
         <StTitleBox>
@@ -38,15 +41,17 @@ const Home = () => {
           ))}
         </StShopBox>
         {FAKEDATA.POLLS.map((poll, index) => (
-          <StSurveyCard key={index}>
-            <StSurveyTitleWrapper>
-              <StSurveyTitle>{poll.title}</StSurveyTitle>
-            </StSurveyTitleWrapper>
-            <StSurveyBottom>
-              <p>질문 개수 {poll.questions.length}개</p>
-              <StSurveyPoint>{poll.point}p</StSurveyPoint>
-            </StSurveyBottom>
-          </StSurveyCard>
+          <Link to={`/poll/${poll.id}`} key={index}>
+            <StSurveyCard>
+              <StSurveyTitleWrapper>
+                <StSurveyTitle>{poll.title}</StSurveyTitle>
+              </StSurveyTitleWrapper>
+              <StSurveyBottom>
+                <p>질문 개수 {poll.questions.length}개</p>
+                <StSurveyPoint>{poll.point}p</StSurveyPoint>
+              </StSurveyBottom>
+            </StSurveyCard>
+          </Link>
         ))}
       </StMainBox>
     </>
@@ -218,7 +223,7 @@ const StShopPrice = styled.button`
 
 const StSurveyCard = styled.div`
   ${() => ColumnCenter}
-  width: 70%;
+  width: 900px;
   border-radius: 10px;
   border: 5px solid ${theme.COLOR.purple};
   padding: 20px;
@@ -229,6 +234,14 @@ const StSurveyCard = styled.div`
   &:hover {
     transform: scale(1.1);
     transition: 0.3s;
+  }
+
+  @media (max-width: 1000px) {
+    width: 700px;
+  }
+
+  @media (max-width: 768px) {
+    width: 450px;
   }
 `;
 
