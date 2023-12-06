@@ -16,7 +16,7 @@ const Home = () => {
         {/* 포인트 많은 순서대로 구현예정 */}
         <StPickBox>
           {FAKEDATA.POLLS.map((poll, index) => (
-            <Link to={`/enpoll/${poll.id}`} key={index}>
+            <Link to={`/poll/${poll.id}`} key={index}>
               <StPickCard>
                 <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
                 {/* 이메일 뒤에 두글자 빼고 보여주기 구현예정  */}
@@ -41,7 +41,7 @@ const Home = () => {
           ))}
         </StShopBox>
         {FAKEDATA.POLLS.map((poll, index) => (
-          <Link to={`/enpoll/${poll.id}`} key={index}>
+          <Link to={`/poll/${poll.id}`} key={index}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
                 <StSurveyTitle>{poll.title}</StSurveyTitle>
