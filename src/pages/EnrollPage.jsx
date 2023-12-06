@@ -9,7 +9,7 @@ import {init} from '../redux/modules/enrollSlice';
 import {SlArrowLeft, SlArrowRight} from 'react-icons/sl';
 
 const SUBMIT = 'submit';
-const WRITE = 'write';
+export const WRITE = 'write';
 
 const EnrollPage = () => {
   const [nowForm, setNowForm] = useState(WRITE);
@@ -32,7 +32,7 @@ const EnrollPage = () => {
     <StEnrollContainer>
       <StContentContainer $nowForm={nowForm}>
         <WritePollContainer />
-        <SubmitPollContainer />
+        <SubmitPollContainer setNowForm={setNowForm} />
       </StContentContainer>
 
       <StButtonContainer>

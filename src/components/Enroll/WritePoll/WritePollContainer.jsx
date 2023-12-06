@@ -4,7 +4,6 @@ import {Button, ColumnCenter} from '../../../styles/CommonStyles';
 import PollFormBox from './PollFormBox';
 import {addQuestion} from '../../../redux/modules/enrollSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import {IoIosAddCircleOutline} from 'react-icons/io';
 
 // 설문조사 생성
 const WritePollContainer = () => {
@@ -25,11 +24,7 @@ const WritePollContainer = () => {
   return (
     <StContainer ref={containerRef}>
       {questions.map((q, i) => {
-        return (
-          <PollFormBox key={q.id} index={i + 1} question={q}>
-            <input placeholder={'질문을 입력해 주세요'} />
-          </PollFormBox>
-        );
+        return <PollFormBox key={q.id} index={i + 1} question={q} />;
       })}
       <StAddButton onClick={onClickAddQuestion}>질문 추가</StAddButton>
     </StContainer>

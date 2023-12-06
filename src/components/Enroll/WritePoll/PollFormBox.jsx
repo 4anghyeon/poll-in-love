@@ -32,8 +32,7 @@ const PollFormBox = ({index, question}) => {
   return (
     <StContainer>
       <h1>{index}번 질문</h1>
-
-      <input onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} />
+      <input onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} autoFocus={question.question === ''} />
       <label>
         답변 타입 <Select options={options} onChangeSelect={onChangeSelect} />
       </label>
