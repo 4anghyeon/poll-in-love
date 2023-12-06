@@ -1,24 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import {RowCenter} from '../../../styles/CommonStyles';
+import {useDispatch} from 'react-redux';
+import {changeRowQuestionAnswer} from '../../../redux/modules/enrollSlice';
 
-const UserAnswerInputRow = ({index, question, setQuestions}) => {
+const UserAnswerInputRow = ({index, answerIndex}) => {
+  const dispatch = useDispatch();
   const onChangeAnswer = e => {
-    setQuestions(prev => {
-      return prev.map(q => {
-        if (q.id !== question.id) return q;
-        else {
-          const answers = [...q.answers];
-          answers[index].answer = e.target.value;
-          q.answers = answers;
-          return q;
-        }
-      });
-    });
+    dispatch(changeRowQuestionAnswer({index, answerIndex, value: e.target.value}));
   };
   return (
     <RowContainer>
-      <input placeholder={`${index + 1}번 답변을 입력하여 주세요.`} onChange={onChangeAnswer} />
+      <input placeholder={`${answerIndex + 1}번 답변을 입력하여 주세요.`} onChange={onChangeAnswer} />
     </RowContainer>
   );
 };

@@ -1,21 +1,81 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from '../../../styles/CommonStyles';
 import theme from '../../../styles/theme';
 import ThumbnailBox from './ThumbnailBox';
 import AdditionalInfoBox from './AdditionalInfoBox';
+import {useSelector} from 'react-redux';
+import {TYPE} from '../../../redux/modules/enrollSlice';
+import {useMutation} from '@tanstack/react-query';
+import {addPoll} from '../../../api/enroll';
+import {useNavigate} from 'react-router-dom';
 
 // 만든 설문조사 제출
 // 제목, 포인트, 썸네일 입력
 const SubmitPollContainer = () => {
+  const enrollData = useSelector(state => state.enroll);
+  const titleRef = useRef(null);
+  const navigate = useNavigate();
+
+  const {
+    isPending,
+    isSuccess,
+    mutate: addMutation,
+  } = useMutation({
+    mutationFn: newPoll => {
+      return addPoll(newPoll);
+    },
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      alert('성공적으로 등록 되었습니다!');
+      navigate('/');
+    }
+  }, [isSuccess]);
+
+  const onClickSubmitButton = e => {
+    e.preventDefault();
+    if (titleRef.current.value === '') {
+      alert('설문 제목을 입력해 주세요');
+      return;
+    }
+
+    if (enrollData.questions.map(q => q.question).some(q => q === '')) {
+      alert('입력되지 않은 질문이 있습니다.');
+      return;
+    }
+
+    if (
+      enrollData.questions
+        .filter(q => q.type === TYPE.SELECT)
+        .map(q => q.answers)
+        .flat()
+        .map(a => a.answer)
+        .some(a => a === '')
+    ) {
+      alert('입력되지 않은 사용자 답변이 있습니다.');
+      return;
+    }
+
+    console.log(enrollData);
+
+    const newPollData = {
+      ...enrollData,
+      title: titleRef.current.value,
+      createDate: new Date(),
+    };
+    addMutation(newPollData);
+  };
+
   return (
     <StContainer>
-      <input placeholder={'설문 제목을 입력해 주세요'} />
+      <input placeholder={'설문 제목을 입력해 주세요'} ref={titleRef} />
       <StDescriptionContainer>
         <ThumbnailBox />
         <AdditionalInfoBox />
       </StDescriptionContainer>
-      <StSubmitButton>등록</StSubmitButton>
+      {!isPending && <StSubmitButton onClick={onClickSubmitButton}>등록</StSubmitButton>}
     </StContainer>
   );
 };
