@@ -27,23 +27,15 @@ const LoginPage = () => {
   };
   const validateEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setEmailError('이메일 아이디를 입력해주세요.');
-    } else if (!emailRegex.test(email)) {
-      setEmailError('올바른 이메일 형식이 아닙니다.');
-    } else {
-      setEmailError('');
-    }
+    if (!email) setEmailError('이메일 아이디를 입력해주세요.');
+    else if (!emailRegex.test(email)) setEmailError('올바른 이메일 형식이 아닙니다.');
+    else setEmailError('');
   };
 
   const validatePassword = () => {
-    if (!password) {
-      setPasswordError('비밀번호를 입력해주세요.');
-    } else if (password.length < 6) {
-      setPasswordError('비밀번호는 6자 이상이어야 합니다.');
-    } else {
-      setPasswordError('');
-    }
+    if (!password) setPasswordError('비밀번호를 입력해주세요.');
+    else if (password.length < 6) setPasswordError('비밀번호는 6자 이상이어야 합니다.');
+    else setPasswordError('');
   };
 
   const onClickLoginButton = async e => {
