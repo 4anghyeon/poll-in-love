@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'SUITE-Regular';
+    src: url('./Sun-Suite-font/SUITE-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SUITE-Bold';
+    src: url('./Sun-Suite-font/SUITE-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
