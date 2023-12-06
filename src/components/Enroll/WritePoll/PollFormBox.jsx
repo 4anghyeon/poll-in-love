@@ -1,33 +1,42 @@
 import React from 'react';
 import styled from 'styled-components';
 import {ColumnCenter} from '../../../styles/CommonStyles';
-import CustomSelect from './CustomSelect';
 import UserAnswerFormBox from './UserAnswerFormBox';
 import theme from '../../../styles/theme';
+import Select from '../../Common/Select';
+import {changeRowQuestionTitle, changeRowQuestionType, TYPE} from '../../../redux/modules/enrollSlice';
+import {useDispatch} from 'react-redux';
 
-const PollFormBox = ({index, question, setQuestions}) => {
+const options = [
+  {
+    value: TYPE.INPUT,
+    text: '사용자 입력',
+  },
+  {
+    value: TYPE.SELECT,
+    text: '사용자 선택',
+  },
+];
+
+const PollFormBox = ({index, question}) => {
+  const dispatch = useDispatch();
+
   const onChangeQuestion = e => {
-    // todo: 로직 중복
-    setQuestions(prev => {
-      return prev.map(q => {
-        if (q.id !== question.id) return q;
-        return {
-          ...q,
-          question: e.target.value,
-        };
-      });
-    });
+    dispatch(changeRowQuestionTitle({index: index, value: e.target.value}));
+  };
+
+  const onChangeSelect = e => {
+    dispatch(changeRowQuestionType({index: index, type: e.target.value}));
   };
 
   return (
     <StContainer>
       <h1>{index}번 질문</h1>
-
-      <input value={question.question} onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} />
+      <input onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} autoFocus={question.question === ''} />
       <label>
-        답변 타입 <CustomSelect question={question} setQuestions={setQuestions} />
+        답변 타입 <Select options={options} onChangeSelect={onChangeSelect} />
       </label>
-      {question.type === 'select' && <UserAnswerFormBox question={question} setQuestions={setQuestions} />}
+      {question.type === TYPE.SELECT && <UserAnswerFormBox question={question} index={index} />}
     </StContainer>
   );
 };
@@ -62,6 +71,12 @@ const StContainer = styled.section`
 
     div {
       margin-left: 10px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    & {
+      width: 100%;
     }
   }
 `;
