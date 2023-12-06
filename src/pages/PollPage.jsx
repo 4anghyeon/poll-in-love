@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from '../styles/CommonStyles';
 import theme from '../styles/theme';
 import QuestionBox from '../components/Poll/QuestionBox';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {addParticipant, findParticipantByPollId, findParticipantByPollIdAndUserId} from '../api/participants';
+import {toast} from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 const fakeData = {
+  id: 'sdfsdfdsf',
   createDate: new Date(),
   title: '가장 맛있는 음식은?',
   questions: [
@@ -29,9 +34,50 @@ const fakeData = {
 };
 
 const PollPage = () => {
-  const [checkAnswers, setCheckAnswers] = useState([]);
-  const progressPercent = (checkAnswers.length / (fakeData.questions.length || 1)) * 100;
-  console.log(progressPercent);
+  const [answer, setAnswer] = useState({...fakeData});
+  const navigate = useNavigate();
+
+  const count = answer.questions.map(q => q.check === true).filter(q => q).length;
+  const progressPercent = (count / (fakeData.questions.length || 1)) * 100;
+
+  const {isPending: isParticipantPending, data: participants} = useQuery({
+    queryKey: ['poll', fakeData.id],
+    queryFn: findParticipantByPollIdAndUserId.bind(null, fakeData.id, fakeData.writer),
+  });
+
+  const {
+    isPending,
+    isSuccess,
+    mutate: addAnswerMutation,
+  } = useMutation({
+    mutationFn: newParticipant => {
+      console.log(newParticipant);
+      return addParticipant(newParticipant);
+    },
+  });
+
+  const onClickSubmitButton = () => {
+    const answers = answer.questions.map(q => q.answer);
+    addAnswerMutation({pollId: fakeData.id, participant: fakeData.writer, answers});
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('설문에 참여해주셔서 감사합니다!', {
+        position: 'top-center',
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      navigate('/');
+    }
+  }, [isSuccess]);
+
+  if (isParticipantPending) return <p>로딩 중...</p>;
 
   return (
     <StPollPageContainer>
@@ -39,15 +85,21 @@ const PollPage = () => {
         <StPollHeader>
           <h1>{fakeData.title}</h1>
           <StProgressBar $percent={progressPercent}>
-            ({checkAnswers.length}/{fakeData.questions.length}개)
+            ({count}/{fakeData.questions.length}개)
           </StProgressBar>
         </StPollHeader>
         <StQuestionContainer>
           {fakeData.questions.map((question, index) => (
-            <QuestionBox key={question.id} index={index} question={question} />
+            <QuestionBox key={question.id} index={index} question={question} setAnswer={setAnswer} />
           ))}
         </StQuestionContainer>
-        <StSubmitButton>제출</StSubmitButton>
+        {participants.length > 0 ? (
+          <StSubmitButton disabled={true}>이미 완료한 설문입니다.</StSubmitButton>
+        ) : (
+          <StSubmitButton onClick={onClickSubmitButton} disabled={isPending || progressPercent !== 100}>
+            제출
+          </StSubmitButton>
+        )}
       </StPollContainer>
     </StPollPageContainer>
   );
