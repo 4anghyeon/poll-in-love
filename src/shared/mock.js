@@ -45,6 +45,7 @@ export const FAKEDATA = {
   ],
   POLLS: [
     {
+      id: 1,
       title: '좋아하는 음식을 물어보겠습니다.',
       point: 50,
       writer: 'abcd_07@naver.com',
@@ -54,7 +55,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
@@ -63,6 +64,7 @@ export const FAKEDATA = {
       ],
     },
     {
+      id: 2,
       title: '올해 가장 재미있게 참여한 POLL-IN-LOVE 이벤트는 무엇인가요?',
       point: 20,
       writer: 'abcd_07@naver.com',
@@ -71,7 +73,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
@@ -84,6 +86,7 @@ export const FAKEDATA = {
       ],
     },
     {
+      id: 3,
       title: '설문 제목 입니다설문 제목 입니다설문 제목 입니다설문 제목 입니다설문 제목 입니다',
       point: 10,
       writer: 'abcd_07@naver.com',
@@ -92,7 +95,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
@@ -101,6 +104,7 @@ export const FAKEDATA = {
       ],
     },
     {
+      id: 4,
       title: '당신의 fall in love는 무엇인가요?',
       point: 5,
       writer: 'abcd_07@naver.com',
@@ -109,7 +113,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
@@ -118,6 +122,7 @@ export const FAKEDATA = {
       ],
     },
     {
+      id: 5,
       title: '설문 제목 입니다',
       point: 500,
       writer: 'abcd_07@naver.com',
@@ -126,7 +131,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
@@ -135,6 +140,7 @@ export const FAKEDATA = {
       ],
     },
     {
+      id: 6,
       title: '설문 제목 입니다',
       point: 50,
       writer: 'abcd_07@naver.com',
@@ -143,7 +149,7 @@ export const FAKEDATA = {
         {
           question: '가장 맛있는 음식은?',
           type: 'select',
-          select: ['호떡', '호빵', '라면'],
+          answers: ['호떡', '호빵', '라면'],
         },
         {
           question: '가장 맛없는 음식은?',
