@@ -7,7 +7,7 @@ import AdditionalInfoBox from './AdditionalInfoBox';
 import {useSelector} from 'react-redux';
 import {TYPE} from '../../../redux/modules/enrollSlice';
 import {useMutation} from '@tanstack/react-query';
-import {addPoll} from '../../../api/enroll';
+import {addPoll} from '../../../api/polls';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {WRITE} from '../../../pages/EnrollPage';

@@ -2,11 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import {FAKEDATA} from 'shared/mock';
 import {DEFAULT_IMAGE} from 'utils/defaultValue';
-import {Link} from '../../../node_modules/react-router-dom/dist/index';
+import {Link} from 'react-router-dom';
+import {getPolls} from 'api/polls';
+import {useQuery} from '@tanstack/react-query';
+import {BarLoader} from 'react-spinners';
+import {getItems} from 'api/items';
 
 const Home = () => {
+  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
+  const {isLoading: isLoadingItems, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
+
+  if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
     <>
       <StMainBox>
@@ -15,7 +22,7 @@ const Home = () => {
         </StTitleBox>
         {/* 포인트 많은 순서대로 구현예정 */}
         <StPickBox>
-          {FAKEDATA.POLLS.map((poll, index) => (
+          {pollsData.map((poll, index) => (
             <Link to={`/poll/${poll.id}`} key={index}>
               <StPickCard>
                 <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
@@ -32,7 +39,7 @@ const Home = () => {
         </StTitleBox>
         {/* 데이터 부를 시 5개만 불러오기, 팔린 순서대로 구현예정 */}
         <StShopBox>
-          {FAKEDATA.ITEMS.map((item, index) => (
+          {itemsData.map((item, index) => (
             <StShopCard key={index}>
               <StShopImg src={item.imageUrl} />
               <StShopTitle>{item.name}</StShopTitle>
@@ -40,7 +47,7 @@ const Home = () => {
             </StShopCard>
           ))}
         </StShopBox>
-        {FAKEDATA.POLLS.map((poll, index) => (
+        {pollsData.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
@@ -96,11 +103,16 @@ const StPickBox = styled.div`
   white-space: nowrap;
   margin-top: 50px;
   height: 100%;
+  justify-content: center;
 
   &::-webkit-scrollbar-thumb {
     background-color: ${theme.COLOR.purple};
     border-radius: 10px;
     width: 10px;
+  }
+
+  @media (max-width: 1000px) {
+    justify-content: flex-start;
   }
 `;
 
@@ -241,7 +253,7 @@ const StSurveyCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 450px;
+    width: 400px;
   }
 `;
 
@@ -278,5 +290,5 @@ const StSurveyPoint = styled.div`
   color: ${theme.COLOR.pink};
   text-align: center;
   line-height: 1.5;
-  width: 10%;
+  width: 50px;
 `;
