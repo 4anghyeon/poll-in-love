@@ -1,4 +1,5 @@
 import {collection, addDoc, getDocs} from 'firebase/firestore';
+
 import {db} from '../shared/firebase/firebase';
 
 const pollsRef = collection(db, 'polls');

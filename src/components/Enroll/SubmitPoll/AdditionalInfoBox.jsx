@@ -5,7 +5,7 @@ import {ColumnCenter} from '../../../styles/CommonStyles';
 import theme from '../../../styles/theme';
 import {useChangeAdditionalInfo} from '../../../hooks/useChangeAdditionalInfo';
 
-const ageOptions = [
+const AGE_OPTIONS = [
   {value: 0, text: '상관 없음'},
   {value: 10, text: '10대'},
   {value: 20, text: '20대'},
@@ -16,8 +16,8 @@ const ageOptions = [
   {value: 70, text: '70대'},
 ];
 
-const genderOptions = [
-  {value: 'no', text: '상관 없음'},
+const GENDER_OPTIONS = [
+  {value: 'none', text: '상관 없음'},
   {value: 'male', text: '남성'},
   {value: 'female', text: '여성'},
 ];
@@ -33,11 +33,11 @@ const AdditionalInfoBox = () => {
         <h1>참여자 조건을 입력하세요</h1>
         <label>
           <span>나이</span>
-          <Select options={ageOptions} onChangeSelect={onChangeAge} />
+          <Select options={AGE_OPTIONS} onChangeSelect={onChangeAge} />
         </label>
         <label>
-          성별
-          <Select options={genderOptions} onChangeSelect={onChangeGender} />
+          <span>성별</span>
+          <Select options={GENDER_OPTIONS} onChangeSelect={onChangeGender} />
         </label>
       </div>
 
