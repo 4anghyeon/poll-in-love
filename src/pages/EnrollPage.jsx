@@ -61,9 +61,9 @@ export default EnrollPage;
 
 const StEnrollContainer = styled.div`
   ${() => ColumnCenter};
-
-  width: 80%;
-  height: 90%;
+  padding: 10px 1rem 10px 1rem;
+  width: 100%;
+  height: calc(100vh - 100px);
 `;
 
 const StContentContainer = styled.section`
