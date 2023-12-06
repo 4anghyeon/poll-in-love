@@ -106,7 +106,7 @@ const LoginPage = () => {
           <StButton type="button" onClick={onClickGoogleLoginButton} $bgColor={theme.COLOR.pink}>
             <span>
               <FaGoogle />
-              ;구글 계정으로 로그인
+              &nbsp;구글 계정으로 로그인
             </span>
           </StButton>
           <StButton type="button" onClick={() => navigate('/signup')}>
