@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import {ColumnCenter} from '../../../styles/CommonStyles';
-import CustomSelect from './CustomSelect';
 import UserAnswerFormBox from './UserAnswerFormBox';
 import theme from '../../../styles/theme';
+import {Poll} from '../../../pages/EnrollPage';
+import Select from '../../Common/Select';
 
 const PollFormBox = ({index, question, setQuestions}) => {
   const onChangeQuestion = e => {
@@ -19,15 +20,38 @@ const PollFormBox = ({index, question, setQuestions}) => {
     });
   };
 
+  const onChangeSelect = e => {
+    setQuestions(prev => {
+      return prev.map(q => {
+        if (q.id !== question.id) return q;
+        return {
+          ...q,
+          type: e.target.value,
+        };
+      });
+    });
+  };
+
+  const options = [
+    {
+      value: Poll.TYPE.INPUT,
+      text: '사용자 입력',
+    },
+    {
+      value: Poll.TYPE.SELECT,
+      text: '사용자 선택',
+    },
+  ];
+
   return (
     <StContainer>
       <h1>{index}번 질문</h1>
 
       <input value={question.question} onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} />
       <label>
-        답변 타입 <CustomSelect question={question} setQuestions={setQuestions} />
+        답변 타입 <Select options={options} onChangeSelect={onChangeSelect} />
       </label>
-      {question.type === 'select' && <UserAnswerFormBox question={question} setQuestions={setQuestions} />}
+      {question.type === Poll.TYPE.SELECT && <UserAnswerFormBox question={question} setQuestions={setQuestions} />}
     </StContainer>
   );
 };
@@ -62,6 +86,12 @@ const StContainer = styled.section`
 
     div {
       margin-left: 10px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    & {
+      width: 100%;
     }
   }
 `;
