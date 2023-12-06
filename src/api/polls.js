@@ -1,4 +1,4 @@
-import {collection, addDoc, getDocs} from 'firebase/firestore';
+import {collection, addDoc, getDocs, getDoc, query, where, doc} from 'firebase/firestore';
 
 import {db} from '../shared/firebase/firebase';
 
@@ -16,4 +16,10 @@ export const getPolls = async () => {
   }));
 
   return polls;
+};
+
+export const getPollById = async pollId => {
+  const pollRef = doc(db, 'polls', pollId);
+  const poll = await getDoc(pollRef);
+  return {id: poll.id, ...poll.data()};
 };
