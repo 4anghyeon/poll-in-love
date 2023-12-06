@@ -9,10 +9,23 @@ import {TYPE} from '../../../redux/modules/enrollSlice';
 import {useMutation} from '@tanstack/react-query';
 import {addPoll} from '../../../api/enroll';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
+import {WRITE} from '../../../pages/EnrollPage';
+
+const TOAST_OPTION = {
+  position: 'top-center',
+  autoClose: 1500,
+  hideProgressBar: true,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: 'light',
+};
 
 // 만든 설문조사 제출
 // 제목, 포인트, 썸네일 입력
-const SubmitPollContainer = () => {
+const SubmitPollContainer = ({setNowForm}) => {
   const enrollData = useSelector(state => state.enroll);
   const titleRef = useRef(null);
   const navigate = useNavigate();
@@ -29,7 +42,7 @@ const SubmitPollContainer = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      alert('성공적으로 등록 되었습니다!');
+      toast.success('성공적으로 등록 되었습니다!', TOAST_OPTION);
       navigate('/');
     }
   }, [isSuccess]);
@@ -37,12 +50,14 @@ const SubmitPollContainer = () => {
   const onClickSubmitButton = e => {
     e.preventDefault();
     if (titleRef.current.value === '') {
-      alert('설문 제목을 입력해 주세요');
+      toast.error('설문 제목을 입력해 주세요', TOAST_OPTION);
+      titleRef.current.focus();
       return;
     }
 
     if (enrollData.questions.map(q => q.question).some(q => q === '')) {
-      alert('입력되지 않은 질문이 있습니다.');
+      toast.error('입력되지 않은 질문이 있습니다.', TOAST_OPTION);
+      setNowForm(WRITE);
       return;
     }
 
@@ -54,11 +69,9 @@ const SubmitPollContainer = () => {
         .map(a => a.answer)
         .some(a => a === '')
     ) {
-      alert('입력되지 않은 사용자 답변이 있습니다.');
+      toast.error('입력되지 않은 사용자 답변이 있습니다.', TOAST_OPTION);
       return;
     }
-
-    console.log(enrollData);
 
     const newPollData = {
       ...enrollData,

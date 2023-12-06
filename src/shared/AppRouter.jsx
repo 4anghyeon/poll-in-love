@@ -5,6 +5,7 @@ import HomePage from '../pages/HomePage';
 import EnrollPage from '../pages/EnrollPage';
 import LoginPage from 'pages/LoginPage';
 import SignUpPage from 'pages/SignUpPage';
+import PollPage from '../pages/PollPage';
 
 const AppRouter = () => {
   return (
@@ -19,7 +20,7 @@ const AppRouter = () => {
           {/*설문 등록*/}
           <Route path="/enroll" element={<EnrollPage />}></Route>
           {/*설문 참여*/}
-          <Route path="/poll" element={<HomePage />}></Route>
+          <Route path="/poll/:id" element={<PollPage />}></Route>
         </Route>
         {/*회원가입*/}
         <Route path="/signup" element={<SignUpPage />}></Route>

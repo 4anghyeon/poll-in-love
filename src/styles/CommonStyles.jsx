@@ -8,7 +8,7 @@ export const RowCenter = css`
 `;
 
 export const ColumnCenter = css`
-  ${() => RowCenter}
+  ${RowCenter};
   flex-direction: column;
 `;
 
@@ -32,4 +32,13 @@ export const Button = styled.button`
       `;
     }
   }}
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 20px;
+  height: 60px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid ${() => theme.COLOR.lightPink};
 `;
