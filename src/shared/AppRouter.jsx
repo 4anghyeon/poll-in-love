@@ -3,6 +3,8 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import HomePage from '../pages/HomePage';
 import EnrollPage from '../pages/EnrollPage';
+import LoginPage from 'pages/LoginPage';
+import SignUpPage from 'pages/SignUpPage';
 import PollPage from '../pages/PollPage';
 
 const AppRouter = () => {
@@ -11,10 +13,6 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<HomePage />}></Route>
-          {/*회원가입*/}
-          <Route path="/signup" element={<HomePage />}></Route>
-          {/*로그인*/}
-          <Route path="/login" element={<HomePage />}></Route>
           {/*마이페이지*/}
           <Route path="/mypage" element={<HomePage />}></Route>
           {/*포인트 상점*/}
@@ -24,6 +22,10 @@ const AppRouter = () => {
           {/*설문 참여*/}
           <Route path="/poll/:id" element={<PollPage />}></Route>
         </Route>
+        {/*회원가입*/}
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        {/*로그인*/}
+        <Route path="/login" element={<LoginPage />}></Route>
       </Routes>
     </BrowserRouter>
   );

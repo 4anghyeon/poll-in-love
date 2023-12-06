@@ -24,6 +24,14 @@ export const Button = styled.button`
   font-size: 1.1rem;
   padding: 10px;
   width: fit-content;
+  ${props => {
+    if (props.disabled) {
+      return css`
+        background-color: lightgrey;
+        cursor: default;
+      `;
+    }
+  }}
 `;
 
 export const Input = styled.input`
