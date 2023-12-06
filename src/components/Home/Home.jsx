@@ -48,7 +48,7 @@ const Home = () => {
           ))}
         </StShopBox>
         {pollsData.map((poll, index) => (
-          <Link to={`/poll/${poll.id}`} key={index}>
+          <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
                 <StSurveyTitle>{poll.title}</StSurveyTitle>
