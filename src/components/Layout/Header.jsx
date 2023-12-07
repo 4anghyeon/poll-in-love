@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/images/logoImge.png';
 import {RxAvatar} from 'react-icons/rx';
-import {NavLink} from '../../../node_modules/react-router-dom/dist/index';
+import {NavLink, Link} from 'react-router-dom';
 import theme from 'styles/theme';
 import {auth} from 'shared/firebase/firebase';
 import {onAuthStateChanged, signOut} from 'firebase/auth';
@@ -15,11 +15,13 @@ import {getUserByEmail} from 'api/users';
 const Header = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
+  const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       setCurrentUser(user);
     });
+    document.addEventListener('click', () => setIsListVisible(false));
   }, []);
 
   const {data: user} = useQuery({
@@ -32,6 +34,11 @@ const Header = () => {
     navigate('/');
   };
 
+  const onClickAvatar = e => {
+    e.stopPropagation();
+    setIsListVisible(!isListVisible);
+  };
+
   return (
     <StHeader>
       <NavLink to="/">
@@ -40,10 +47,21 @@ const Header = () => {
       {currentUser ? (
         <StDiv>
           <span>{user?.nickname}님 반갑습니다!</span>
-          <NavLink to={`/mypage/${user?.id}`}>
-            <RxAvatar size="45" color="white" />
-          </NavLink>
-          <Button onClick={logOutUser}>로그아웃</Button>
+          <StAvatar>
+            <RxAvatar size="45" color="white" onClick={onClickAvatar} />
+          </StAvatar>
+
+          {isListVisible ? (
+            <StList>
+              <Link to={`/mypage/${user?.id}`}>
+                <li>마이 페이지</li>
+              </Link>
+              <Link to="/enroll">
+                <li>설문 등록</li>
+              </Link>
+              <li onClick={logOutUser}>로그아웃</li>
+            </StList>
+          ) : null}
         </StDiv>
       ) : (
         <StDiv>
@@ -70,4 +88,31 @@ const StDiv = styled.div`
   display: flex;
   align-items: center;
   gap: 15px;
+`;
+
+const StList = styled.ul`
+  position: absolute;
+  background-color: whitesmoke;
+  color: black;
+  right: 3%;
+  top: 5%;
+  border-radius: 10px;
+  & li {
+    margin: 5px 0px;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    font-size: ${theme.FONT_SIZE.lg};
+    &:hover {
+      color: white;
+      background-color: ${theme.COLOR.pink};
+    }
+  }
+`;
+
+const StAvatar = styled.div`
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    opacity: 0.5;
+  }
 `;
