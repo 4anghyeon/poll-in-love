@@ -8,7 +8,7 @@ import {addParticipant, findParticipantByPollIdAndUserId} from '../api/participa
 import {toast} from 'react-toastify';
 import {useLoaderData, useNavigate} from 'react-router-dom';
 import {BeatLoader} from 'react-spinners';
-import {updateUserPoint} from '../api/users';
+import {getUserByEmail, updateUserPoint} from '../api/users';
 import {auth} from '../shared/firebase/firebase';
 import TOAST_OPTION from '../utils/toast-option';
 import Modal from 'react-modal';
@@ -42,8 +42,9 @@ const PollPage = () => {
     mutationFn: newParticipant => {
       return addParticipant(newParticipant);
     },
-    onSuccess: () => {
-      updatePoint({userId: auth.currentUser.email, point: +poll.point});
+    onSuccess: async () => {
+      const {id} = await getUserByEmail(auth.currentUser.email);
+      updatePoint({userId: id, point: +poll.point});
     },
   });
 
