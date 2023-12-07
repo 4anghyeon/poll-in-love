@@ -14,6 +14,8 @@ import {useNavigate} from 'react-router-dom';
 import TOAST_OPTION from '../utils/toast-option';
 import {BeatLoader} from 'react-spinners';
 import {isPending} from '@reduxjs/toolkit';
+import {auth} from '../shared/firebase/firebase';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 const SUBMIT = 'submit';
 export const WRITE = 'write';
@@ -26,6 +28,7 @@ const EnrollPage = () => {
   const navigate = useNavigate();
   const titleRef = useRef(null);
 
+  // 설문 조사 등록 mutation
   const {
     isPending: isAddPending,
     isSuccess: isAddSuccess,
@@ -42,6 +45,7 @@ const EnrollPage = () => {
     },
   });
 
+  // 썸네일 업로드 mutation
   const {isSuccess: isUploadSuccess, mutateAsync: uploadMutation} = useMutation({
     mutationFn: ({pollId, uploadFile}) => {
       return uploadThumbnail(pollId, uploadFile);
@@ -54,6 +58,7 @@ const EnrollPage = () => {
     },
   });
 
+  // 썸네일 업로드 후 -> 이미지 파일 등록한 poll에 update하는 mutation
   const {mutateAsync: updateMutation} = useMutation({
     mutationFn: ({pollId, imgUrl}) => {
       return updatePollThumbnail(pollId, imgUrl);
@@ -100,6 +105,8 @@ const EnrollPage = () => {
 
     const newPollData = {
       ...enrollData,
+      writer: auth.currentUser.email,
+      nickname: auth.currentUser.displayName,
       title: titleRef.current.value,
       createDate: new Date(),
     };
@@ -117,6 +124,12 @@ const EnrollPage = () => {
   }, [isAddSuccess, isUploadSuccess]);
 
   useEffect(() => {
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        toast.error('로그인 후 이용해 주세요', TOAST_OPTION.topCenter);
+        navigate('/login', {replace: true});
+      }
+    });
     // 등록 페이지로 들어오면 Form 전부 초기화
     dispatch(init());
   }, []);

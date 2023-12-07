@@ -5,7 +5,7 @@ export const useChangeAdditionalInfo = attr => {
   const dispatch = useDispatch();
 
   const onChange = e => {
-    dispatch(changeAdditionalInfo({attr, value: e.target.value}));
+    dispatch(changeAdditionalInfo({attr, value: +e.target.value}));
   };
 
   return onChange;
