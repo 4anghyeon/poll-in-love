@@ -40,9 +40,10 @@ const AdditionalInfoBox = () => {
           <Select options={GENDER_OPTIONS} onChangeSelect={onChangeGender} />
         </label>
       </div>
-
-      <h1>설문에 참여하면 얻게 될 포인트를 입력하세요</h1>
-      <input type="number" min={0} defaultValue={0} onChange={onChangePoint} />
+      <div>
+        <h1>설문에 참여하면 얻게 될 포인트를 입력하세요</h1>
+        <input type="number" min={0} defaultValue={0} onChange={onChangePoint} />
+      </div>
     </StInfoBoxContainer>
   );
 };
@@ -52,7 +53,7 @@ export default AdditionalInfoBox;
 const StInfoBoxContainer = styled.div`
   ${ColumnCenter};
   height: 100%;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: flex-start;
   width: 100%;
   & > div {
