@@ -5,6 +5,7 @@ import AppRouter from './shared/AppRouter';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ function App() {
         <AppRouter />
       </Provider>
       <ToastContainer />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

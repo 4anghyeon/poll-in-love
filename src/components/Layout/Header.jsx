@@ -4,7 +4,7 @@ import logo from '../../assets/images/logoImge.png';
 import {RxAvatar} from 'react-icons/rx';
 import {NavLink} from '../../../node_modules/react-router-dom/dist/index';
 import theme from 'styles/theme';
-import {auth, db} from 'shared/firebase/firebase';
+import {auth} from 'shared/firebase/firebase';
 import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {collection, getDocs, query, where, getDoc} from 'firebase/firestore';
 import {useNavigate} from 'react-router-dom';
@@ -15,26 +15,22 @@ import {getUserByEmail} from 'api/users';
 const Header = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
-  // const [userEmail, setUserEmail] = useState('');
-  const [userDocId, setUserDocId] = useState('');
-  let userEmail;
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       console.log('user', user); // user 정보 없으면 null 표시
       setCurrentUser(user);
-      userEmail = user.email;
-      console.log(userEmail);
+      // userEmail = user.email;
     });
   }, []);
 
   const {data: user} = useQuery({
     queryKey: ['user'],
-    queryFn: () => getUserByEmail(userEmail),
+    queryFn: () => getUserByEmail(auth.currentUser.email),
   });
 
   console.log('user!!', user);
-  // console.log(user.id);
+
   /*
   const getUserByEmail = async () => {
     const q = query(collection(db, 'users'), where('email', '==', userEmail));
@@ -65,6 +61,7 @@ const Header = () => {
           <NavLink to={`/mypage/${user?.id}`}>
             <RxAvatar size="45" color="white" />
           </NavLink>
+          <span>{user?.nickname}님 반갑습니다!</span>
           <Button onClick={logOutUser}>로그아웃</Button>
         </>
       ) : (

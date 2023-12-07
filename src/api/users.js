@@ -20,14 +20,13 @@ export const getUserById = async userId => {
   const user = await getDoc(userRef);
   return {id: user.id, ...user.data()};
 };
+
 export const getUserByEmail = async userEmail => {
   const q = query(collection(db, 'users'), where('email', '==', userEmail));
-
   try {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.docs.length > 0) {
       const userData = {id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()};
-      console.log(userData);
       return userData;
     }
   } catch (error) {
