@@ -18,9 +18,7 @@ const Header = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
-      console.log('user', user); // user 정보 없으면 null 표시
       setCurrentUser(user);
-      // userEmail = user.email;
     });
   }, []);
 
@@ -29,46 +27,29 @@ const Header = () => {
     queryFn: () => getUserByEmail(auth.currentUser.email),
   });
 
-  console.log('user!!', user);
-
-  /*
-  const getUserByEmail = async () => {
-    const q = query(collection(db, 'users'), where('email', '==', userEmail));
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.docs.length > 0) {
-      userData = {id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data()};
-      console.log(userData);
-      // setUserDocId(querySnapshot.docs[0].id)
-    }
-    // querySnapshot.forEach(doc => {
-    //   console.log(`${doc.id} => ${doc.data()}`);
-    //   setUserDocId(doc.id);
-    // });
-  };
-  getUserByEmail();
-*/
   const logOutUser = async () => {
     await signOut(auth);
     navigate('/');
   };
+
   return (
     <StHeader>
       <NavLink to="/">
         <img src={logo} width={300} height={40} alt="logo" />
       </NavLink>
       {currentUser ? (
-        <>
+        <StDiv>
+          <span>{user?.nickname}님 반갑습니다!</span>
           <NavLink to={`/mypage/${user?.id}`}>
             <RxAvatar size="45" color="white" />
           </NavLink>
-          <span>{user?.nickname}님 반갑습니다!</span>
           <Button onClick={logOutUser}>로그아웃</Button>
-        </>
+        </StDiv>
       ) : (
-        <>
+        <StDiv>
           <Button onClick={() => navigate('/login')}>로그인</Button>
           <Button onClick={() => navigate('/signup')}>회원가입</Button>
-        </>
+        </StDiv>
       )}
     </StHeader>
   );
@@ -83,4 +64,10 @@ const StHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
+`;
+
+const StDiv = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
 `;
