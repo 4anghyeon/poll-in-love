@@ -1,17 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import BarLoader from '../../../node_modules/react-spinners/BarLoader';
 import {useQuery} from '@tanstack/react-query';
 import {getItems} from 'api/items';
+import Modal from 'react-modal';
 
 const Shop = () => {
   const {isLoading, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
 
+  const [seletedItem, setSeletedItem] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const clickedItemButton = item => {
+    setSeletedItem(item);
+    setModalIsOpen(true);
+  };
+
+  const clickedModalOutside = e => {
+    e.stopPropagation();
+    setModalIsOpen(false);
+  };
+
+  useEffect(() => {
+    if (seletedItem) {
+      setModalIsOpen(true);
+    }
+  }, [seletedItem]);
+
   if (isLoading) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
-    <StItemContainer>
+    <StItemContainer onClick={clickedModalOutside}>
       <StBanner>
         <h1>POINT SHOP</h1>
         <p>포인트를 사용하여 상품을 구매해보세요! 🎉</p>
@@ -27,7 +47,7 @@ const Shop = () => {
       <StCategoryTitle>편의점</StCategoryTitle>
       <StItemBox>
         {itemsData.map((item, index) => (
-          <StItemCard key={index}>
+          <StItemCard onClick={() => clickedItemButton(item)} key={index}>
             <StItemImage src={item.imageUrl} />
             <StItemCategory>{item.category}</StItemCategory>
             <StItemTitle>{item.name}</StItemTitle>
@@ -35,6 +55,18 @@ const Shop = () => {
           </StItemCard>
         ))}
       </StItemBox>
+      {seletedItem && (
+        <Modal style={modalStyle} isOpen={modalIsOpen} ariaHideApp={false}>
+          <StModalInnerBox>
+            <h1>포인트 결제</h1>
+            <StModalItemImage src={seletedItem.imageUrl} />
+            <StItemCategory>{seletedItem.category}</StItemCategory>
+            <StItemTitle>{seletedItem.name}</StItemTitle>
+            <StModalItemPoint>{seletedItem.point}p</StModalItemPoint>
+            <StModalButton>나에게 선물하기</StModalButton>
+          </StModalInnerBox>
+        </Modal>
+      )}
     </StItemContainer>
   );
 };
@@ -69,6 +101,7 @@ const StBanner = styled.div`
     color: #fcfafa;
     margin-left: 100px;
     margin: 35px 0 0 100px;
+    letter-spacing: 2px;
   }
   p {
     font-size: 20px;
@@ -76,6 +109,18 @@ const StBanner = styled.div`
     padding: 20px;
     color: white;
     margin-left: 100px;
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 30px;
+      margin-left: 50px;
+    }
+    p {
+      font-size: 15px;
+      margin-left: 50px;
+    }
   }
 `;
 
@@ -158,8 +203,6 @@ const StCategoryListBox = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  overflow: auto;
-  white-space: nowrap;
   margin-top: 30px;
   height: 100%;
   justify-content: flex-end;
@@ -180,4 +223,73 @@ const StCategoryList = styled.div`
   &:hover {
     color: ${theme.COLOR.purple};
   }
+`;
+
+const modalStyle = {
+  overlay: {
+    backgroundColor: ' rgba(0, 0, 0, 0.4)',
+    width: '100%',
+    height: '100vh',
+    zIndex: '10',
+    position: 'fixed',
+    top: '0',
+    left: '0',
+  },
+  content: {
+    width: '370px',
+    height: '400px',
+    zIndex: '150',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    borderRadius: '10px',
+    boxShadow: '2px 2px 2px rgba(0, 0, 0, 0.25)',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    overflow: 'auto',
+  },
+};
+
+const StModalInnerBox = styled.div`
+  ${() => ColumnCenter}
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+    margin-top: 10px;
+  }
+`;
+
+const StModalButton = styled.button`
+  background-color: ${theme.COLOR.purple};
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  letter-spacing: 2px;
+`;
+
+const StModalItemImage = styled.div`
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-image: url(${props => props.src});
+  background-size: cover;
+  background-position: center;
+`;
+
+const StModalItemPoint = styled.div`
+  font-size: 17px;
+  font-weight: 700;
+  color: ${theme.COLOR.pink};
+  margin: 15px 0 10px 0;
+  cursor: pointer;
 `;
