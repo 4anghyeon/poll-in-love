@@ -8,6 +8,9 @@ import {addParticipant, findParticipantByPollIdAndUserId} from '../api/participa
 import {toast} from 'react-toastify';
 import {useLoaderData, useNavigate} from 'react-router-dom';
 import {BeatLoader} from 'react-spinners';
+import {updateUserPoint} from '../api/users';
+import {auth} from '../shared/firebase/firebase';
+import TOAST_OPTION from '../utils/toast-option';
 
 const PollPage = () => {
   const poll = useLoaderData();
@@ -22,33 +25,34 @@ const PollPage = () => {
     queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, poll.writer),
   });
 
+  const {mutate: updatePoint} = useMutation({
+    mutationFn: data => {
+      return updateUserPoint(data.userId, data.point);
+    },
+  });
+
   const {
     isPending,
     isSuccess,
-    mutate: addAnswerMutation,
+    mutate: addAnswer,
   } = useMutation({
     mutationFn: newParticipant => {
       return addParticipant(newParticipant);
+    },
+    onSuccess: () => {
+      updatePoint({userId: auth.currentUser.email, point: +poll.point});
     },
   });
 
   const onClickSubmitButton = () => {
     const answers = answer.questions.map(q => q.answer);
-    addAnswerMutation({pollId: poll.id, participant: poll.writer, answers});
+    addAnswer({pollId: poll.id, participant: poll.writer, answers});
   };
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('설문에 참여해주셔서 감사합니다!', {
-        position: 'top-center',
-        autoClose: 1500,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      });
+      toast.success('설문에 참여해주셔서 감사합니다!', TOAST_OPTION.topCenter);
+      if (+poll.point > 0) toast.info(`${+poll.point} 포인트를 획득하셨습니다!`, TOAST_OPTION.topCenter);
       navigate('/');
     }
   }, [isSuccess]);
