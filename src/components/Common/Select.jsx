@@ -2,6 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 
+/**
+ * 커스텀 Select Element
+ * @param options
+ * - [{value: 값, text: 표시 문자열}]
+ * @param onChangeSelect
+ *  - 값 변화시 일어날 이벤트
+ * @param defaultValue
+ * - 기본 선택 값 (선택)
+ * @returns {Element}
+ */
 const Select = ({options = [], onChangeSelect, defaultValue}) => {
   return (
     <StSelectContainer>

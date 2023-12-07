@@ -44,28 +44,35 @@ const enrollSlice = createSlice({
       state.questions.push(Poll());
       return state;
     },
+    removeQuestion: (state, action) => {
+      state.questions.splice(action.payload.index, 1);
+    },
     changeAdditionalInfo: (state, action) => {
       state[action.payload.attr] = action.payload.value;
       return state;
     },
     changeRowQuestionTitle: (state, action) => {
       const {index, value} = action.payload;
-      state.questions[index - 1].question = value;
+      state.questions[index].question = value;
       return state;
     },
     changeRowQuestionType: (state, action) => {
       const {index, type} = action.payload;
-      state.questions[index - 1].type = type;
+      state.questions[index].type = type;
       return state;
     },
     addRowQuestionAnswer: (state, action) => {
       const {index} = action.payload;
-      state.questions[index - 1].answers.push(UserAnswer());
+      state.questions[index].answers.push(UserAnswer());
       return state;
+    },
+    removeRowQuestionAnswer: (state, action) => {
+      const {index, answerIndex} = action.payload;
+      state.questions[index].answers.splice(answerIndex, 1);
     },
     changeRowQuestionAnswer: (state, action) => {
       const {index, answerIndex, value} = action.payload;
-      state.questions[index - 1].answers[answerIndex].answer = value;
+      state.questions[index].answers[answerIndex].answer = value;
       return state;
     },
   },
@@ -74,9 +81,11 @@ const enrollSlice = createSlice({
 export const {
   init,
   addQuestion,
+  removeQuestion,
   changeRowQuestionTitle,
   changeRowQuestionType,
   addRowQuestionAnswer,
+  removeRowQuestionAnswer,
   changeRowQuestionAnswer,
   changeAdditionalInfo,
 } = enrollSlice.actions;
