@@ -4,14 +4,15 @@ import {ColumnCenter} from '../../../styles/CommonStyles';
 import theme from '../../../styles/theme';
 import ThumbnailBox from './ThumbnailBox';
 import AdditionalInfoBox from './AdditionalInfoBox';
+
 // 만든 설문조사 제출
 // 제목, 포인트, 썸네일 입력
-const SubmitPollContainer = forwardRef(({setNowForm}, ref) => {
+const SubmitPollContainer = forwardRef(({setNowForm, setImgFile}, ref) => {
   return (
     <StContainer>
       <input placeholder={'설문 제목을 입력해 주세요'} ref={ref} />
       <StDescriptionContainer>
-        <ThumbnailBox />
+        <ThumbnailBox setImgFile={setImgFile} />
         <AdditionalInfoBox />
       </StDescriptionContainer>
     </StContainer>

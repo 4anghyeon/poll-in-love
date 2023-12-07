@@ -9,68 +9,92 @@ import {init, TYPE} from '../redux/modules/enrollSlice';
 import {SlArrowLeft, SlArrowRight} from 'react-icons/sl';
 import {toast} from 'react-toastify';
 import {useMutation} from '@tanstack/react-query';
-import {addPoll} from '../api/polls';
+import {addPoll, updatePollThumbnail, uploadThumbnail} from '../api/polls';
 import {useNavigate} from 'react-router-dom';
+import TOAST_OPTION from '../utils/toast-option';
+import {BeatLoader} from 'react-spinners';
+import {isPending} from '@reduxjs/toolkit';
 
 const SUBMIT = 'submit';
 export const WRITE = 'write';
 
-const TOAST_OPTION = {
-  position: 'top-center',
-  autoClose: 1500,
-  hideProgressBar: true,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-  progress: undefined,
-  theme: 'light',
-};
-
 const EnrollPage = () => {
   const [nowForm, setNowForm] = useState(WRITE);
+  const [imgFile, setImgFile] = useState(null);
   const enrollData = useSelector(state => state.enroll);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const titleRef = useRef(null);
 
-  const {isSuccess, mutate: addMutation} = useMutation({
+  const {
+    isPending: isAddPending,
+    isSuccess: isAddSuccess,
+    mutate: addMutation,
+  } = useMutation({
     mutationFn: newPoll => {
       return addPoll(newPoll);
     },
+    onSuccess: async pollId => {
+      if (imgFile) {
+        const imgUrl = await uploadMutation({pollId, uploadFile: imgFile});
+        await updateMutation({pollId, imgUrl});
+      }
+    },
   });
 
+  const {isSuccess: isUploadSuccess, mutateAsync: uploadMutation} = useMutation({
+    mutationFn: ({pollId, uploadFile}) => {
+      return uploadThumbnail(pollId, uploadFile);
+    },
+    onSuccess: data => {
+      return data;
+    },
+    onError: err => {
+      console.error(err);
+    },
+  });
+
+  const {mutateAsync: updateMutation} = useMutation({
+    mutationFn: ({pollId, imgUrl}) => {
+      return updatePollThumbnail(pollId, imgUrl);
+    },
+  });
+
+  // 다음 페이지 이동
   const onClickNextForm = () => {
     setNowForm(SUBMIT);
   };
 
+  // 이전 페이지 이동
   const onClickPreviousForm = () => {
     setNowForm(WRITE);
   };
 
+  // 설문 등록 버튼시
   const onClickSubmitButton = e => {
     e.preventDefault();
-    console.log(titleRef);
     if (titleRef.current.value === '') {
-      toast.error('설문 제목을 입력해 주세요', TOAST_OPTION);
+      toast.error('설문 제목을 입력해 주세요', TOAST_OPTION.topCenter);
       titleRef.current.focus();
       return;
     }
 
     if (enrollData.questions.map(q => q.question).some(q => q === '')) {
-      toast.error('입력되지 않은 질문이 있습니다.', TOAST_OPTION);
+      toast.error('입력되지 않은 질문이 있습니다.', TOAST_OPTION.topCenter);
       setNowForm(WRITE);
       return;
     }
 
-    if (
-      enrollData.questions
-        .filter(q => q.type === TYPE.SELECT)
-        .map(q => q.answers)
-        .flat()
-        .map(a => a.answer)
-        .some(a => a === '')
-    ) {
-      toast.error('입력되지 않은 사용자 답변이 있습니다.', TOAST_OPTION);
+    const checkEmptyAnswerExist = enrollData.questions
+      .filter(q => q.type === TYPE.SELECT)
+      .map(q => q.answers)
+      .flat()
+      .map(a => a.answer)
+      .some(a => a === '');
+
+    if (checkEmptyAnswerExist) {
+      toast.error('입력되지 않은 사용자 답변이 있습니다.', TOAST_OPTION.topCenter);
+      setNowForm(WRITE);
       return;
     }
 
@@ -83,11 +107,14 @@ const EnrollPage = () => {
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success('성공적으로 등록 되었습니다!', TOAST_OPTION);
+    if ((isAddSuccess && !imgFile) || (isAddSuccess && imgFile && isUploadSuccess)) {
+      toast.success('성공적으로 등록 되었습니다!', TOAST_OPTION.topCenter);
+      navigate('/');
+    } else if (isAddSuccess && imgFile && !isUploadSuccess) {
+      toast.error('썸네일 업로드에 문제가 발생했습니다.', TOAST_OPTION.topCenter);
       navigate('/');
     }
-  }, [isSuccess]);
+  }, [isAddSuccess, isUploadSuccess]);
 
   useEffect(() => {
     // 등록 페이지로 들어오면 Form 전부 초기화
@@ -96,12 +123,23 @@ const EnrollPage = () => {
 
   return (
     <StEnrollContainer>
-      <StContentContainer $nowForm={nowForm}>
-        <WritePollContainer />
-        <SubmitPollContainer setNowForm={setNowForm} ref={titleRef} />
-      </StContentContainer>
+      {isAddPending && (
+        <StOverlay>
+          <BeatLoader
+            color={theme.COLOR.pink}
+            height={10}
+            width={300}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </StOverlay>
+      )}
 
-      <StButtonContainer>
+      <StContentContainer $nowForm={nowForm} $isAddPending={isAddPending}>
+        <WritePollContainer />
+        <SubmitPollContainer setNowForm={setNowForm} setImgFile={setImgFile} ref={titleRef} />
+      </StContentContainer>
+      <StButtonContainer $isAddPending={isAddPending}>
         {nowForm === SUBMIT ? (
           <>
             <Button onClick={onClickPreviousForm} $bgColor={theme.COLOR.pink}>
@@ -141,6 +179,7 @@ const StContentContainer = styled.section`
   height: 100%;
   position: relative;
   overflow: hidden;
+  filter: blur(${({$isAddPending}) => ($isAddPending ? '2px' : 0)});
 
   & > div {
     transform: translateX(${({$nowForm}) => ($nowForm === WRITE ? '0' : '-100%')});
@@ -154,10 +193,19 @@ const StButtonContainer = styled.div`
   padding-top: 10px;
   border-top: 1px solid ${() => theme.COLOR.lightPink};
   justify-content: center;
+  filter: blur(${({$isAddPending}) => ($isAddPending ? '2px' : 0)});
 
   & button:nth-child(2) {
     margin-left: 20px;
     width: 80px;
     justify-content: center;
   }
+`;
+
+const StOverlay = styled.div`
+  ${RowCenter};
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
 `;
