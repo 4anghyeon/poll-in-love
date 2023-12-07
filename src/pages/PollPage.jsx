@@ -24,7 +24,7 @@ const PollPage = () => {
 
   const {isPending: isParticipantPending, data: participants} = useQuery({
     queryKey: ['poll', poll.id],
-    queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, poll.writer),
+    queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, auth.currentUser.email),
   });
   const isSurveyed = participants?.length > 0;
 
