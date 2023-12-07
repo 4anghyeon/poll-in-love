@@ -7,7 +7,7 @@ import ShopPage from 'pages/ShopPage';
 import LoginPage from 'pages/LoginPage';
 import SignUpPage from 'pages/SignUpPage';
 import PollPage from '../pages/PollPage';
-
+import MyPage from 'pages/MyPage';
 
 const AppRouter = () => {
   return (
@@ -16,7 +16,7 @@ const AppRouter = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<HomePage />}></Route>
           {/*마이페이지*/}
-          <Route path="/mypage" element={<HomePage />}></Route>
+          <Route path="/mypage/:id" element={<MyPage />}></Route>
           {/*포인트 상점*/}
           <Route path="/shop" element={<ShopPage />}></Route>
           {/*설문 등록*/}

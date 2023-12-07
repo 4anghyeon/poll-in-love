@@ -1,94 +1,142 @@
 import React, {useState} from 'react';
-import {NavLink} from '../../node_modules/react-router-dom/dist/index';
+import {NavLink, useNavigate} from 'react-router-dom';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {auth} from 'shared/firebase/firebase';
 import logo from '../assets/images/logoImge.png';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import useForm from 'hooks/useForm';
+import {toast} from 'react-toastify';
+import {addUser} from 'api/users';
 
 const SignUpPage = () => {
-  const {formState, onChangeHandler, resetForm} = useForm({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    nickname: '',
-    age: '',
-    gender: '',
-  });
-  const {email, password, confirmPassword, nickname, age, gender} = formState;
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [nicknameError, setNicknameError] = useState();
-  const [ageError, setAgeError] = useState('');
-  const [genderError, setGenderError] = useState('');
-  console.log(email, password, confirmPassword, nickname, age, gender);
+  const [nicknameError, setNicknameError] = useState('');
 
-  const validateEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) setEmailError('이메일 아이디를 입력해주세요.');
-    else if (!emailRegex.test(email)) setEmailError('올바른 이메일 형식이 아닙니다.');
-    else setEmailError('');
+  const navigate = useNavigate();
+
+  const onChangeEmail = e => {
+    setEmail(() => {
+      const newEmail = e.target.value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!newEmail) setEmailError('이메일 아이디를 입력해주세요.');
+      else if (!emailRegex.test(newEmail)) setEmailError('올바른 이메일 형식이 아닙니다.');
+      else setEmailError('');
+      return newEmail;
+    });
   };
 
-  const validatePassword = () => {
-    if (!password) setPasswordError('비밀번호를 입력해주세요.');
-    else if (password.length < 6) setPasswordError('비밀번호는 6자 이상이어야 합니다.');
-    else setPasswordError('');
+  const onChangePassword = e => {
+    setPassword(() => {
+      const newPassword = e.target.value;
+      if (!newPassword) setPasswordError('비밀번호를 입력해주세요.');
+      else if (newPassword.length < 6) setPasswordError('비밀번호는 6자 이상이어야 합니다.');
+      else setPasswordError('');
+      return newPassword;
+    });
   };
 
-  const onClickSignUpButton = () => {};
+  const onChangeConfirmPassword = e => {
+    setConfirmPassword(() => {
+      const newConfirmPassword = e.target.value;
+      if (!newConfirmPassword) setConfirmPasswordError('비밀번호 확인을 입력해주세요.');
+      else if (password !== newConfirmPassword) setConfirmPasswordError('비밀번호를 잘못 입력하셨습니다.');
+      else setConfirmPasswordError('');
+      return newConfirmPassword;
+    });
+  };
+
+  const onChangeNickname = e => {
+    setNickname(() => {
+      const newNickname = e.target.value;
+      if (!newNickname) setNicknameError('닉네임을 입력해주세요.');
+      else if (newNickname.length < 2) setNicknameError('닉네임은 2자 이상이어야 합니다.');
+      else setNicknameError('');
+      return newNickname;
+    });
+  };
+  const onSubmitSignUp = async e => {
+    e.preventDefault();
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(userCredential);
+      const newUser = {
+        nickname,
+        email,
+        point: 0,
+        age,
+        gender,
+        items: [],
+      };
+      addUser(newUser);
+      toast.success('회원가입 성공!');
+      navigate('/');
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log('error with signUp', errorCode, errorMessage);
+      if (errorCode === 'auth/email-already-in-use') toast.error('이미 존재하는 아이디입니다.');
+      else if (errorCode === 'auth/invalid-email') toast.error('유효하지 않은 이메일 입니다.');
+    }
+  };
+  // console.log(email, password, confirmPassword, nickname, age, gender);
   return (
     <StContainer>
-      <StForm onSubmit={onClickSignUpButton}>
+      <StForm onSubmit={onSubmitSignUp}>
         <NavLink to="/">
           <img src={logo} width={300} height={40} alt="logo" />
         </NavLink>
-        <label>이메일 아이디</label>
+        <label htmlFor="email">이메일 아이디</label>
         <input
           placeholder="이메일 아이디를 입력하세요."
+          id="email"
           type="email"
-          name="email"
-          onChange={onChangeHandler}
+          onChange={onChangeEmail}
           value={email}
           required
-          onBlur={validateEmail}
         />
-        <span style={{color: 'red'}}>{emailError}</span>
-        <label>비밀번호</label>
+        <div style={{color: 'red'}}>{emailError}</div>
+        <label htmlFor="password">비밀번호</label>
         <input
           placeholder="비밀번호를 입력하세요."
+          id="password"
           type="password"
-          name="password"
-          onChange={onChangeHandler}
+          onChange={onChangePassword}
           value={password}
           required
-          onBlur={validatePassword}
         />
         <span style={{color: 'red'}}>{passwordError}</span>
-        <label>비밀번호 확인</label>
+        <label htmlFor="confirmPassword">비밀번호 확인</label>
         <input
           placeholder="비밀번호를 다시 입력하세요."
+          id="confirmPassword"
           type="password"
-          name="confirmPassword"
-          onChange={onChangeHandler}
+          onChange={onChangeConfirmPassword}
           value={confirmPassword}
           required
-          // onBlur={validatePassword}
         />
-        <span style={{color: 'red'}}>{passwordError}</span>
-        <label>닉네임</label>
+        <span style={{color: 'red'}}>{confirmPasswordError}</span>
+        <label htmlFor="nickname">닉네임</label>
         <input
-          placeholder="이메일 아이디를 입력하세요."
+          placeholder="닉네임을 입력하세요."
+          id="nickname"
           type="text"
-          name="nickname"
-          onChange={onChangeHandler}
+          onChange={onChangeNickname}
           value={nickname}
           required
-          // onBlur={validateEmail}
         />
+        <span style={{color: 'red'}}>{nicknameError}</span>
         <label htmlFor="age">연령대</label>
-        <select id="age" name="age" onChange={onChangeHandler}>
+        <select id="age" name="age" onChange={e => setAge(e.target.value)}>
           <option value="0">상관 없음</option>
           <option value="10">10대</option>
           <option value="20">20대</option>
@@ -99,7 +147,7 @@ const SignUpPage = () => {
           <option value="70">70대</option>
         </select>
         <label htmlFor="gender">성별</label>
-        <select id="gender" name="gender" onChange={onChangeHandler}>
+        <select id="gender" name="gender" onChange={e => setGender(e.target.value)}>
           <option value="none">상관 없음</option>
           <option value="male">남성</option>
           <option value="female">여성</option>
