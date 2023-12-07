@@ -40,11 +40,13 @@ const Home = () => {
         {/* 데이터 부를 시 5개만 불러오기, 팔린 순서대로 구현예정 */}
         <StShopBox>
           {itemsData.map((item, index) => (
+            <Link to = "/shop">
             <StShopCard key={index}>
               <StShopImg src={item.imageUrl} />
               <StShopTitle>{item.name}</StShopTitle>
               <StShopPrice>{item.point}p</StShopPrice>
             </StShopCard>
+            </Link>
           ))}
         </StShopBox>
         {pollsData.map((poll, index) => (
@@ -68,10 +70,7 @@ const Home = () => {
 export default Home;
 
 const StMainBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+ ${() => ColumnCenter}
   width: 1400px;
   margin: 0 auto;
 
