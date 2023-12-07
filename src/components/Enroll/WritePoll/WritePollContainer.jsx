@@ -24,7 +24,7 @@ const WritePollContainer = () => {
   return (
     <StContainer ref={containerRef}>
       {questions.map((q, i) => {
-        return <PollFormBox key={q.id} index={i + 1} question={q} />;
+        return <PollFormBox key={q.id} index={i} question={q} />;
       })}
       <StAddButton onClick={onClickAddQuestion}>질문 추가</StAddButton>
     </StContainer>
