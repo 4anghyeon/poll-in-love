@@ -6,6 +6,8 @@ import {BarLoader} from 'react-spinners';
 import {useQuery} from '@tanstack/react-query';
 import {getItems} from 'api/items';
 import Modal from 'react-modal';
+import {getUserByEmail} from 'api/users';
+import {auth} from 'shared/firebase/firebase';
 
 const CATEGORIES = ['전체', '편의점', '카페', '치킨', '영화'];
 
@@ -21,6 +23,11 @@ const Shop = () => {
     setBuyItem(item);
     setModalIsOpen(true);
   };
+
+  const {data: user} = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUserByEmail(auth.currentUser.email),
+  });
 
   useEffect(() => {
     if (!itemsData) return;
@@ -44,9 +51,8 @@ const Shop = () => {
           <h2>포인트를 사용하여 상품을 구매해보세요! 🎉</h2>
         </div>
         <div>
-          {/* 정보 불러올 예정 */}
-          <p>으랏차차님😊 안녕하세요!</p>
-          <p>포인트 : 1000p </p>
+          <p>{user?.nickname}님😊 안녕하세요!</p>
+          <p>포인트 : {user?.point}p </p>
         </div>
       </StBanner>
       <StCategoryListBox>
@@ -82,8 +88,7 @@ const Shop = () => {
           <StItemCategory>{buyItem?.category}</StItemCategory>
           <StItemTitle>{buyItem?.name}</StItemTitle>
           <StModalItemPoint>{buyItem?.point}p</StModalItemPoint>
-          {/* 정보 불러올 예정 */}
-          <p>잔액포인트 : 100p </p>
+          <p>잔액포인트 : {user?.point}p </p>
           <StModalButton>나에게 선물하기</StModalButton>
         </StModalInnerBox>
       </Modal>
