@@ -1,53 +1,85 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from '../styles/CommonStyles';
 import theme from '../styles/theme';
 import QuestionBox from '../components/Poll/QuestionBox';
-
-const fakeData = {
-  createDate: new Date(),
-  title: '가장 맛있는 음식은?',
-  questions: [
-    {
-      id: '123',
-      question: '분식 중에서',
-      type: 'input',
-    },
-    {
-      id: '1234',
-      question: '다음 메뉴 중에서',
-      type: 'select',
-      answers: [
-        {id: '123213', answer: '떡볶이'},
-        {id: '1asd23213', answer: '라면'},
-        {id: '1232asd13', answer: '김밥'},
-      ],
-    },
-  ],
-  writer: '이상현',
-  thumbnail: null,
-};
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {addParticipant, findParticipantByPollIdAndUserId} from '../api/participants';
+import {toast} from 'react-toastify';
+import {useLoaderData, useNavigate} from 'react-router-dom';
+import {BeatLoader} from 'react-spinners';
 
 const PollPage = () => {
-  const [checkAnswers, setCheckAnswers] = useState([]);
-  const progressPercent = (checkAnswers.length / (fakeData.questions.length || 1)) * 100;
-  console.log(progressPercent);
+  const poll = useLoaderData();
+  const [answer, setAnswer] = useState({...poll});
+  const navigate = useNavigate();
+
+  const count = answer.questions.map(q => q.check === true).filter(q => q).length;
+  const progressPercent = (count / (poll.questions.length || 1)) * 100;
+
+  const {isPending: isParticipantPending, data: participants} = useQuery({
+    queryKey: ['poll', poll.id],
+    queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, poll.writer),
+  });
+
+  const {
+    isPending,
+    isSuccess,
+    mutate: addAnswerMutation,
+  } = useMutation({
+    mutationFn: newParticipant => {
+      return addParticipant(newParticipant);
+    },
+  });
+
+  const onClickSubmitButton = () => {
+    const answers = answer.questions.map(q => q.answer);
+    addAnswerMutation({pollId: poll.id, participant: poll.writer, answers});
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('설문에 참여해주셔서 감사합니다!', {
+        position: 'top-center',
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      navigate('/');
+    }
+  }, [isSuccess]);
+
+  if (isParticipantPending) {
+    return (
+      <BeatLoader color={theme.COLOR.pink} height={10} width={300} aria-label="Loading Spinner" data-testid="loader" />
+    );
+  }
 
   return (
     <StPollPageContainer>
       <StPollContainer>
         <StPollHeader>
-          <h1>{fakeData.title}</h1>
+          <h1>{poll.title}</h1>
           <StProgressBar $percent={progressPercent}>
-            ({checkAnswers.length}/{fakeData.questions.length}개)
+            ({count}/{poll.questions.length}개)
           </StProgressBar>
         </StPollHeader>
         <StQuestionContainer>
-          {fakeData.questions.map((question, index) => (
-            <QuestionBox key={question.id} index={index} question={question} />
+          {poll.questions.map((question, index) => (
+            <QuestionBox key={question.id} index={index} question={question} setAnswer={setAnswer} />
           ))}
         </StQuestionContainer>
-        <StSubmitButton>제출</StSubmitButton>
+        {participants.length > 0 ? (
+          <StSubmitButton disabled={true}>이미 완료한 설문입니다.</StSubmitButton>
+        ) : (
+          <StSubmitButton onClick={onClickSubmitButton} disabled={isPending || progressPercent !== 100}>
+            제출
+          </StSubmitButton>
+        )}
       </StPollContainer>
     </StPollPageContainer>
   );

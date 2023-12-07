@@ -4,8 +4,9 @@ import {ColumnCenter} from '../../../styles/CommonStyles';
 import UserAnswerFormBox from './UserAnswerFormBox';
 import theme from '../../../styles/theme';
 import Select from '../../Common/Select';
-import {changeRowQuestionTitle, changeRowQuestionType, TYPE} from '../../../redux/modules/enrollSlice';
+import {changeRowQuestionTitle, changeRowQuestionType, removeQuestion, TYPE} from '../../../redux/modules/enrollSlice';
 import {useDispatch} from 'react-redux';
+import {MdRemoveCircleOutline} from 'react-icons/md';
 
 const options = [
   {
@@ -29,9 +30,16 @@ const PollFormBox = ({index, question}) => {
     dispatch(changeRowQuestionType({index: index, type: e.target.value}));
   };
 
+  const onClickRemoveQuestion = () => {
+    dispatch(removeQuestion({index: index}));
+  };
+
   return (
     <StContainer>
-      <h1>{index}번 질문</h1>
+      <StTitleContainer>
+        <h1>{index + 1}번 질문</h1>
+        {index !== 0 && <MdRemoveCircleOutline onClick={onClickRemoveQuestion} />}
+      </StTitleContainer>
       <input onChange={onChangeQuestion} placeholder={'질문을 입력해 주세요'} autoFocus={question.question === ''} />
       <label>
         답변 타입 <Select options={options} onChangeSelect={onChangeSelect} />
@@ -45,9 +53,7 @@ export default PollFormBox;
 
 const StContainer = styled.section`
   ${() => ColumnCenter};
-  h1 {
-    margin-bottom: 20px;
-  }
+
   width: 50%;
   padding: 20px;
   margin-bottom: 20px;
@@ -78,5 +84,20 @@ const StContainer = styled.section`
     & {
       width: 100%;
     }
+  }
+`;
+
+const StTitleContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+
+  & svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    cursor: pointer;
+    color: ${theme.COLOR.pink};
   }
 `;

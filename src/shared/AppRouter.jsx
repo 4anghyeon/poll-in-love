@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, createBrowserRouter, Route, RouterProvider, Routes} from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import HomePage from '../pages/HomePage';
 import EnrollPage from '../pages/EnrollPage';
@@ -7,30 +7,57 @@ import ShopPage from 'pages/ShopPage';
 import LoginPage from 'pages/LoginPage';
 import SignUpPage from 'pages/SignUpPage';
 import PollPage from '../pages/PollPage';
+import {getPollById} from '../api/polls';
 import MyPage from 'pages/MyPage';
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        // 마이페이지
+        path: 'mypage/:id',
+        element: <MyPage />,
+      },
+      {
+        // 포인트 상점
+        path: 'shop',
+        element: <ShopPage />,
+      },
+      {
+        // 설문 등록
+        path: 'enroll',
+        element: <EnrollPage />,
+      },
+      {
+        // 설문 참여
+        path: 'poll/:id',
+        element: <PollPage />,
+        loader: ({params}) => {
+          return getPollById(params.id);
+        },
+      },
+      {
+        // 회원가입
+        path: 'signup',
+        element: <SignUpPage />,
+      },
+      {
+        // 로그인
+        path: 'login',
+        element: <LoginPage />,
+      },
+    ],
+  },
+]);
+
 const AppRouter = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="/" element={<HomePage />}></Route>
-          {/*마이페이지*/}
-          <Route path="/mypage/:id" element={<MyPage />}></Route>
-          {/*포인트 상점*/}
-          <Route path="/shop" element={<ShopPage />}></Route>
-          {/*설문 등록*/}
-          <Route path="/enroll" element={<EnrollPage />}></Route>
-          {/*설문 참여*/}
-          <Route path="/poll/:id" element={<PollPage />}></Route>
-        </Route>
-        {/*회원가입*/}
-        <Route path="/signup" element={<SignUpPage />}></Route>
-        {/*로그인*/}
-        <Route path="/login" element={<LoginPage />}></Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default AppRouter;
