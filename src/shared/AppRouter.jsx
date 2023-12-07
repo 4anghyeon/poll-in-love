@@ -8,6 +8,7 @@ import LoginPage from 'pages/LoginPage';
 import SignUpPage from 'pages/SignUpPage';
 import PollPage from '../pages/PollPage';
 import {getPollById} from '../api/polls';
+import MyPage from 'pages/MyPage';
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,8 @@ const router = createBrowserRouter([
       },
       {
         // 마이페이지
-        path: 'mypage',
-        element: <HomePage />,
+        path: 'mypage/:id',
+        element: <MyPage />,
       },
       {
         // 포인트 상점
@@ -41,17 +42,17 @@ const router = createBrowserRouter([
           return getPollById(params.id);
         },
       },
-      {
-        // 회원가입
-        path: 'signup',
-        element: <SignUpPage />,
-      },
-      {
-        // 로그인
-        path: 'login',
-        element: <LoginPage />,
-      },
     ],
+  },
+  {
+    // 회원가입
+    path: 'signup',
+    element: <SignUpPage />,
+  },
+  {
+    // 로그인
+    path: 'login',
+    element: <LoginPage />,
   },
 ]);
 
