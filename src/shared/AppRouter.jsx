@@ -42,17 +42,17 @@ const router = createBrowserRouter([
           return getPollById(params.id);
         },
       },
-      {
-        // 회원가입
-        path: 'signup',
-        element: <SignUpPage />,
-      },
-      {
-        // 로그인
-        path: 'login',
-        element: <LoginPage />,
-      },
     ],
+  },
+  {
+    // 회원가입
+    path: 'signup',
+    element: <SignUpPage />,
+  },
+  {
+    // 로그인
+    path: 'login',
+    element: <LoginPage />,
   },
 ]);
 
