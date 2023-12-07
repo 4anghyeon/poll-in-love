@@ -20,13 +20,13 @@ const Home = () => {
         <StTitleBox>
           <h1>오늘의 PICK📌</h1>
         </StTitleBox>
-        {/* 포인트 많은 순서대로 구현예정 */}
+        {/* 포인트 많은 순서대로 구현예정 4개*/}
         <StPickBox>
           {pollsData.map((poll, index) => (
             <Link to={`/poll/${poll.id}`} key={index}>
               <StPickCard>
                 <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                {/* 이메일 뒤에 두글자 빼고 보여주기 구현예정  */}
+                {/* 닉네임 변경예정*/}
                 <StPickId> {poll.writer}</StPickId>
                 <StPickTitle>{poll.title}</StPickTitle>
                 <StPickPoint>{poll.point}p</StPickPoint>
@@ -40,15 +40,16 @@ const Home = () => {
         {/* 데이터 부를 시 5개만 불러오기, 팔린 순서대로 구현예정 */}
         <StShopBox>
           {itemsData.map((item, index) => (
-            <Link to = "/shop">
-            <StShopCard key={index}>
-              <StShopImg src={item.imageUrl} />
-              <StShopTitle>{item.name}</StShopTitle>
-              <StShopPrice>{item.point}p</StShopPrice>
-            </StShopCard>
+            <Link to="/shop">
+              <StShopCard key={index}>
+                <StShopImg src={item.imageUrl} />
+                <StShopTitle>{item.name}</StShopTitle>
+                <StShopPrice>{item.point}p</StShopPrice>
+              </StShopCard>
             </Link>
           ))}
         </StShopBox>
+        {/* 검색어 구현 예정 */}
         {pollsData.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
@@ -70,7 +71,7 @@ const Home = () => {
 export default Home;
 
 const StMainBox = styled.div`
- ${() => ColumnCenter}
+  ${() => ColumnCenter}
   width: 1400px;
   margin: 0 auto;
 

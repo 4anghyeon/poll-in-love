@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
@@ -7,14 +7,18 @@ import {useQuery} from '@tanstack/react-query';
 import {getItems} from 'api/items';
 import Modal from 'react-modal';
 
+const CATEGORIES = ['전체', '편의점', '카페', '치킨', '영화'];
+
 const Shop = () => {
   const {isLoading, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
 
-  const [seletedItem, setSeletedItem] = useState(null);
+  const [buyItem, setBuyItem] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedCategory, setSeletedCategory] = useState(CATEGORIES[0]);
+  const [selectedItems, setSelectedItems] = useState(itemsData);
 
   const clickedItemButton = item => {
-    setSeletedItem(item);
+    setBuyItem(item);
     setModalIsOpen(true);
   };
 
@@ -24,30 +28,49 @@ const Shop = () => {
   };
 
   useEffect(() => {
-    if (seletedItem) {
+    if (buyItem) {
       setModalIsOpen(true);
     }
-  }, [seletedItem]);
+  }, [buyItem]);
 
-  if (isLoading) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
+  useEffect(() => {
+    if (!itemsData) return;
+    if (selectedCategory === CATEGORIES[0]) {
+      setSelectedItems(itemsData);
+    } else {
+      setSelectedItems(itemsData.filter(item => item.category === selectedCategory));
+    }
+  }, [selectedCategory, itemsData]);
+
+  if (isLoading || !selectedItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
     <StItemContainer onClick={clickedModalOutside}>
       <StBanner>
         <h1>POINT SHOP</h1>
+        {/* <p>닉네임님😊 </p>
+          <p>잔액포인트 : 1000p</p> */}
         <p>포인트를 사용하여 상품을 구매해보세요! 🎉</p>
       </StBanner>
       {/* seletedCategory 구현예정 */}
       <StCategoryListBox>
-        <StCategoryList>전체</StCategoryList>
-        <StCategoryList>편의점</StCategoryList>
-        <StCategoryList>카페</StCategoryList>
-        <StCategoryList>치킨</StCategoryList>
-        <StCategoryList>영화</StCategoryList>
+        {CATEGORIES.map((category, index) => {
+          return (
+            <StCategoryList
+              key={index}
+              onClick={() => {
+                setSeletedCategory(category);
+              }}
+              $isClicked={selectedCategory === category}
+            >
+              {category}
+            </StCategoryList>
+          );
+        })}
       </StCategoryListBox>
-      <StCategoryTitle>편의점</StCategoryTitle>
+      <StCategoryTitle>{selectedCategory}</StCategoryTitle>
       <StItemBox>
-        {itemsData.map((item, index) => (
-          <StItemCard onClick={() => clickedItemButton(item)} key={index}>
+        {selectedItems.map((item, index) => (
+          <StItemCard onClick={() => clickedItemButton(item)} key={index} item={item}>
             <StItemImage src={item.imageUrl} />
             <StItemCategory>{item.category}</StItemCategory>
             <StItemTitle>{item.name}</StItemTitle>
@@ -55,14 +78,15 @@ const Shop = () => {
           </StItemCard>
         ))}
       </StItemBox>
-      {seletedItem && (
+      {buyItem && (
         <Modal style={modalStyle} isOpen={modalIsOpen} ariaHideApp={false}>
           <StModalInnerBox>
             <h1>포인트 결제</h1>
-            <StModalItemImage src={seletedItem.imageUrl} />
-            <StItemCategory>{seletedItem.category}</StItemCategory>
-            <StItemTitle>{seletedItem.name}</StItemTitle>
-            <StModalItemPoint>{seletedItem.point}p</StModalItemPoint>
+            <StModalItemImage src={buyItem.imageUrl} />
+            <StItemCategory>{buyItem.category}</StItemCategory>
+            <StItemTitle>{buyItem.name}</StItemTitle>
+            <StModalItemPoint>{buyItem.point}p</StModalItemPoint>
+            {/* 잔액포인트 : 1000p 변경예정*/}
             <StModalButton>나에게 선물하기</StModalButton>
           </StModalInnerBox>
         </Modal>
@@ -216,9 +240,9 @@ const StCategoryList = styled.div`
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: black;
   margin-right: 20px;
   cursor: pointer;
+  color: ${props => (props.$isClicked ? theme.COLOR.purple : 'black')};
 
   &:hover {
     color: ${theme.COLOR.purple};
