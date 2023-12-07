@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import BarLoader from '../../../node_modules/react-spinners/BarLoader';
+import {BarLoader} from 'react-spinners';
 import {useQuery} from '@tanstack/react-query';
 import {getItems} from 'api/items';
 import Modal from 'react-modal';
@@ -22,17 +22,6 @@ const Shop = () => {
     setModalIsOpen(true);
   };
 
-  const clickedModalOutside = e => {
-    e.stopPropagation();
-    setModalIsOpen(false);
-  };
-
-  useEffect(() => {
-    if (buyItem) {
-      setModalIsOpen(true);
-    }
-  }, [buyItem]);
-
   useEffect(() => {
     if (!itemsData) return;
     if (selectedCategory === CATEGORIES[0]) {
@@ -44,14 +33,22 @@ const Shop = () => {
 
   if (isLoading || !selectedItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
-    <StItemContainer onClick={clickedModalOutside}>
-      <StBanner>
-        <h1>POINT SHOP</h1>
-        {/* <p>닉네임님😊 </p>
-          <p>잔액포인트 : 1000p</p> */}
-        <p>포인트를 사용하여 상품을 구매해보세요! 🎉</p>
+    <StItemContainer>
+      <StBanner
+        onClick={() => {
+          setSeletedCategory(CATEGORIES[0]);
+        }}
+      >
+        <div>
+          <h1>POINT SHOP</h1>
+          <h2>포인트를 사용하여 상품을 구매해보세요! 🎉</h2>
+        </div>
+        <div>
+          {/* 정보 불러올 예정 */}
+          <p>으랏차차님😊 안녕하세요!</p>
+          <p>포인트 : 1000p </p>
+        </div>
       </StBanner>
-      {/* seletedCategory 구현예정 */}
       <StCategoryListBox>
         {CATEGORIES.map((category, index) => {
           return (
@@ -78,19 +75,18 @@ const Shop = () => {
           </StItemCard>
         ))}
       </StItemBox>
-      {buyItem && (
-        <Modal style={modalStyle} isOpen={modalIsOpen} ariaHideApp={false}>
-          <StModalInnerBox>
-            <h1>포인트 결제</h1>
-            <StModalItemImage src={buyItem.imageUrl} />
-            <StItemCategory>{buyItem.category}</StItemCategory>
-            <StItemTitle>{buyItem.name}</StItemTitle>
-            <StModalItemPoint>{buyItem.point}p</StModalItemPoint>
-            {/* 잔액포인트 : 1000p 변경예정*/}
-            <StModalButton>나에게 선물하기</StModalButton>
-          </StModalInnerBox>
-        </Modal>
-      )}
+      <Modal style={modalStyle} isOpen={modalIsOpen} ariaHideApp={false} onRequestClose={() => setModalIsOpen(false)}>
+        <StModalInnerBox>
+          <h1>포인트 결제</h1>
+          <StModalItemImage src={buyItem?.imageUrl} />
+          <StItemCategory>{buyItem?.category}</StItemCategory>
+          <StItemTitle>{buyItem?.name}</StItemTitle>
+          <StModalItemPoint>{buyItem?.point}p</StModalItemPoint>
+          {/* 정보 불러올 예정 */}
+          <p>잔액포인트 : 100p </p>
+          <StModalButton>나에게 선물하기</StModalButton>
+        </StModalInnerBox>
+      </Modal>
     </StItemContainer>
   );
 };
@@ -117,6 +113,11 @@ const StBanner = styled.div`
   background-color: ${theme.COLOR.pink};
   border-radius: 10px;
   margin: 50px 0 1rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  cursor: pointer;
 
   h1 {
     font-size: 35px;
@@ -127,13 +128,24 @@ const StBanner = styled.div`
     margin: 35px 0 0 100px;
     letter-spacing: 2px;
   }
-  p {
+
+  h2 {
     font-size: 20px;
     font-weight: 700;
     padding: 20px;
     color: white;
     margin-left: 100px;
     letter-spacing: 2px;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px;
+    color: white;
+    margin-right: 100px;
+    letter-spacing: 2px;
+    text-align: center;
   }
 
   @media (max-width: 768px) {
@@ -261,7 +273,7 @@ const modalStyle = {
   },
   content: {
     width: '370px',
-    height: '400px',
+    height: '420px',
     zIndex: '150',
     position: 'absolute',
     top: '50%',
@@ -284,6 +296,11 @@ const StModalInnerBox = styled.div`
     margin-bottom: 20px;
     letter-spacing: 3px;
     margin-top: 10px;
+  }
+
+  p {
+    font-size: 15px;
+    margin: 5px 0 5px 0;
   }
 `;
 

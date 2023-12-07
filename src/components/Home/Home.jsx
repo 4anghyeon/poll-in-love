@@ -27,7 +27,7 @@ const Home = () => {
               <StPickCard>
                 <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
                 {/* 닉네임 변경예정*/}
-                <StPickId> {poll.writer}</StPickId>
+                <StPickId> {poll.nickname}</StPickId>
                 <StPickTitle>{poll.title}</StPickTitle>
                 <StPickPoint>{poll.point}p</StPickPoint>
               </StPickCard>
@@ -49,7 +49,7 @@ const Home = () => {
             </Link>
           ))}
         </StShopBox>
-        {/* 검색어 구현 예정 */}
+        {/* 검색어 구현 예정 , 최신순으로 불러오기*/}
         {pollsData.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
