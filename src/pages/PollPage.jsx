@@ -98,10 +98,10 @@ const StPollContainer = styled.div`
   height: 100%;
   position: relative;
 
-  @media screen and (max-width: 768px) {
+  /* @media screen and (max-width: 768px) {
     & {
       width: 100%;
-    }
+    } */
 `;
 
 const StPollHeader = styled.div`

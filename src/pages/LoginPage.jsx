@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import theme from 'styles/theme';
 import {FaGoogle} from 'react-icons/fa';
 import {NavLink, useNavigate} from '../../node_modules/react-router-dom/dist/index';
+import {addUser, setUser} from 'api/users';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -56,12 +57,18 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Google Login Successful:', user);
-      const newUserObj = {
+
+      const newUser = {
+        nickname: user.displayName,
         email: user.email,
+        point: 0,
+        age: null,
+        gender: null,
+        items: [],
       };
-      const docRef = await addDoc(collection(db, 'users'), newUserObj);
+      addUser(newUser);
+      //   setUser(newUser);
       navigate('/');
-      console.log('Document written with ID: ', docRef.id);
     } catch (error) {
       console.error('Google Login Error:', error.message);
     }
