@@ -49,7 +49,7 @@ const PollPage = () => {
 
   const onClickSubmitButton = () => {
     const answers = answer.questions.map(q => q.answer);
-    addAnswer({pollId: poll.id, participant: poll.writer, answers});
+    addAnswer({pollId: poll.id, participant: auth.currentUser.email, answers});
   };
 
   const onClickHome = () => {
