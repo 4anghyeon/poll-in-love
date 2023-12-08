@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {init, TYPE} from '../redux/modules/enrollSlice';
 import {SlArrowLeft, SlArrowRight} from 'react-icons/sl';
 import {toast} from 'react-toastify';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {addPoll, updatePollThumbnail, uploadThumbnail} from '../api/polls';
 import {useNavigate} from 'react-router-dom';
 import TOAST_OPTION from '../utils/toast-option';
@@ -16,6 +16,7 @@ import {BeatLoader} from 'react-spinners';
 import {isPending} from '@reduxjs/toolkit';
 import {auth} from '../shared/firebase/firebase';
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import {getUserByEmail} from '../api/users';
 
 const SUBMIT = 'submit';
 export const WRITE = 'write';
@@ -65,6 +66,12 @@ const EnrollPage = () => {
     },
   });
 
+  // 등록 유저 정보
+  const {data: user} = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUserByEmail(auth.currentUser.email),
+  });
+
   // 다음 페이지 이동
   const onClickNextForm = () => {
     setNowForm(SUBMIT);
@@ -106,7 +113,7 @@ const EnrollPage = () => {
     const newPollData = {
       ...enrollData,
       writer: auth.currentUser.email,
-      nickname: auth.currentUser.displayName,
+      nickname: user.nickname,
       title: titleRef.current.value,
       createDate: new Date(),
     };

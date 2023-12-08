@@ -6,7 +6,7 @@ import QuestionBox from '../components/Poll/QuestionBox';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {addParticipant, findParticipantByPollIdAndUserId} from '../api/participants';
 import {toast} from 'react-toastify';
-import {useLoaderData, useNavigate} from 'react-router-dom';
+import {useLoaderData, useLocation, useNavigate} from 'react-router-dom';
 import {BeatLoader} from 'react-spinners';
 import {getUserByEmail, updateUserPoint} from '../api/users';
 import {auth} from '../shared/firebase/firebase';
@@ -16,6 +16,7 @@ import {DEFAULT_IMAGE} from '../utils/defaultValue';
 
 const PollPage = () => {
   const poll = useLoaderData();
+  const location = useLocation();
   const [answer, setAnswer] = useState({...poll});
   const navigate = useNavigate();
 
@@ -53,8 +54,8 @@ const PollPage = () => {
     addAnswer({pollId: poll.id, participant: auth.currentUser.email, answers});
   };
 
-  const onClickHome = () => {
-    navigate('/');
+  const onClickBack = () => {
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const PollPage = () => {
           <StModalContent>
             <h1>이미 참여하신 설문입니다. 🥺</h1>
             <p>다른 설문에 참여 해보세요.</p>
-            <Button onClick={onClickHome}>홈으로</Button>
+            <Button onClick={onClickBack}>다른 설문 보러가기</Button>
           </StModalContent>
         </Modal>
       )}
