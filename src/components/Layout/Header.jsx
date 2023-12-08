@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/images/logoImge.png';
-import {RxAvatar} from 'react-icons/rx';
-import {RxHamburgerMenu} from 'react-icons/rx';
-import {NavLink, Link} from 'react-router-dom';
+import {RxAvatar, RxHamburgerMenu} from 'react-icons/rx';
+import {BsShop} from 'react-icons/bs';
+import {Link, NavLink, useNavigate} from 'react-router-dom';
 import theme from 'styles/theme';
 import {auth} from 'shared/firebase/firebase';
 import {onAuthStateChanged, signOut} from 'firebase/auth';
-import {collection, getDocs, query, where, getDoc} from 'firebase/firestore';
-import {useNavigate} from 'react-router-dom';
-import {Button} from 'styles/CommonStyles';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {Button, RowCenter} from 'styles/CommonStyles';
+import {useQuery} from '@tanstack/react-query';
 import {getUserByEmail} from 'api/users';
+import {MdOutlineAddChart} from 'react-icons/md';
+import {TbLogout} from 'react-icons/tb';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -54,15 +54,27 @@ const Header = () => {
           {isListVisible ? (
             <StList>
               <Link to={`/mypage/${user?.id}`}>
-                <li>마이 페이지</li>
+                <StContextMenuRow>
+                  <RxAvatar />
+                  마이 페이지
+                </StContextMenuRow>
               </Link>
               <Link to="/enroll">
-                <li>설문 등록</li>
+                <StContextMenuRow>
+                  <MdOutlineAddChart />
+                  설문 등록
+                </StContextMenuRow>
               </Link>
               <Link to="/shop">
-                <li>포인트 상점</li>
+                <StContextMenuRow>
+                  <BsShop />
+                  포인트 상점
+                </StContextMenuRow>
               </Link>
-              <li onClick={logOutUser}>로그아웃</li>
+              <StContextMenuRow onClick={logOutUser}>
+                <TbLogout />
+                로그아웃
+              </StContextMenuRow>
             </StList>
           ) : null}
         </StDiv>
@@ -107,7 +119,7 @@ const StList = styled.ul`
   background-color: whitesmoke;
   color: black;
   right: 3%;
-  top: 55%;
+  top: 55px;
   border-radius: 10px;
   box-shadow: 0px 8px 16px 0px #00000033;
   & li {
@@ -128,4 +140,13 @@ const StAvatar = styled.div`
   &:hover {
     opacity: 0.5;
   }
+`;
+
+const StContextMenuRow = styled.li`
+  ${RowCenter};
+  justify-content: flex-start;
+  svg {
+    margin-right: 5px;
+  }
+  cursor: pointer;
 `;
