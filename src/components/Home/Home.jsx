@@ -33,7 +33,7 @@ const Home = () => {
 
   useEffect(() => {
     if (pollsData) {
-      setAllPolls(pollsData.sort((a, b) => a.dueDate.seconds - b.dueDate.seconds));
+      setAllPolls(pollsData.sort((a, b) => a.dueDate?.seconds - b.dueDate?.seconds));
     }
   }, [pollsData]);
 
