@@ -13,9 +13,8 @@ import {addPoll, updatePollThumbnail, uploadThumbnail} from '../api/polls';
 import {useNavigate} from 'react-router-dom';
 import TOAST_OPTION from '../utils/toast-option';
 import {BeatLoader} from 'react-spinners';
-import {isPending} from '@reduxjs/toolkit';
 import {auth} from '../shared/firebase/firebase';
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import {onAuthStateChanged} from 'firebase/auth';
 import {getUserByEmail} from '../api/users';
 
 const SUBMIT = 'submit';

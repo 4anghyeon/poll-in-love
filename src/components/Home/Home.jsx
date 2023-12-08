@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import {DEFAULT_IMAGE} from 'utils/defaultValue';
+import {DEFAULT_IMAGE, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
 import {getPolls} from 'api/polls';
 import {useQuery} from '@tanstack/react-query';
 import {BarLoader} from 'react-spinners';
 import {getItems} from 'api/items';
+import moment from 'moment/moment';
+import {FaRegCalendarAlt} from 'react-icons/fa';
 
 const Home = () => {
   const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
@@ -29,6 +31,10 @@ const Home = () => {
                 {/* 닉네임 변경예정*/}
                 <StPickId> {poll.nickname}</StPickId>
                 <StPickTitle>{poll.title}</StPickTitle>
+                <StDueDate>
+                  <FaRegCalendarAlt />
+                  마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
+                </StDueDate>
                 <StPickPoint>{poll.point}p</StPickPoint>
               </StPickCard>
             </Link>
@@ -58,6 +64,10 @@ const Home = () => {
               </StSurveyTitleWrapper>
               <StSurveyBottom>
                 <p>질문 개수 {poll.questions.length}개</p>
+                <p>
+                  <FaRegCalendarAlt />
+                  마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
+                </p>
                 <StSurveyPoint>{poll.point}p</StSurveyPoint>
               </StSurveyBottom>
             </StSurveyCard>
@@ -279,6 +289,13 @@ const StSurveyBottom = styled.div`
   justify-content: space-evenly;
   width: 100%;
   margin-top: 20px;
+
+  p {
+    ${RowCenter};
+    & svg {
+      margin-right: 5px;
+    }
+  }
 `;
 
 const StSurveyPoint = styled.div`
@@ -291,4 +308,16 @@ const StSurveyPoint = styled.div`
   text-align: center;
   line-height: 1.5;
   width: 50px;
+`;
+
+const StDueDate = styled.div`
+  ${RowCenter};
+  font-size: ${theme.FONT_SIZE.sm};
+  font-weight: bold;
+  color: #4f4f4f;
+  margin-bottom: 10px;
+
+  & svg {
+    margin-right: 5px;
+  }
 `;
