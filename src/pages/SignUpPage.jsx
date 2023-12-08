@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {auth} from 'shared/firebase/firebase';
@@ -8,6 +8,10 @@ import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {toast} from 'react-toastify';
 import {addUser} from 'api/users';
+import Select from '../components/Common/Select';
+import {AGE_OPTIONS, GENDER_OPTIONS} from '../utils/defaultValue';
+import {useMutation} from '@tanstack/react-query';
+import {BarLoader} from 'react-spinners';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState('');
@@ -23,6 +27,16 @@ const SignUpPage = () => {
   const [nicknameError, setNicknameError] = useState('');
 
   const navigate = useNavigate();
+
+  const {
+    isPending: isAddPending,
+    isSuccess: isAddSuccess,
+    mutate: addMutation,
+  } = useMutation({
+    mutationFn: newUser => {
+      addUser(newUser);
+    },
+  });
 
   const onChangeEmail = e => {
     setEmail(() => {
@@ -67,8 +81,7 @@ const SignUpPage = () => {
   const onSubmitSignUp = async e => {
     e.preventDefault();
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userCredential);
+      await createUserWithEmailAndPassword(auth, email, password);
       const newUser = {
         nickname,
         email,
@@ -77,18 +90,27 @@ const SignUpPage = () => {
         gender,
         items: [],
       };
-      addUser(newUser);
-      toast.success('회원가입 성공!');
-      navigate('/');
+      addMutation(newUser);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
-      console.log('error with signUp', errorCode, errorMessage);
+      console.error('error with signUp', errorCode, errorMessage);
       if (errorCode === 'auth/email-already-in-use') toast.error('이미 존재하는 아이디입니다.');
       else if (errorCode === 'auth/invalid-email') toast.error('유효하지 않은 이메일 입니다.');
     }
   };
-  // console.log(email, password, confirmPassword, nickname, age, gender);
+
+  useEffect(() => {
+    if (isAddSuccess) {
+      toast.success('회원가입 성공!');
+      navigate('/');
+    }
+  }, [isAddSuccess]);
+
+  if (isAddPending) {
+    return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
+  }
+
   return (
     <StContainer>
       <StForm onSubmit={onSubmitSignUp}>
@@ -136,22 +158,9 @@ const SignUpPage = () => {
         />
         <span style={{color: 'red'}}>{nicknameError}</span>
         <label htmlFor="age">연령대</label>
-        <select id="age" name="age" onChange={e => setAge(e.target.value)}>
-          <option value="0">상관 없음</option>
-          <option value="10">10대</option>
-          <option value="20">20대</option>
-          <option value="30">30대</option>
-          <option value="40">40대</option>
-          <option value="50">50대</option>
-          <option value="60">60대</option>
-          <option value="70">70대</option>
-        </select>
+        <Select id="age" options={AGE_OPTIONS} onChangeSelect={e => setAge(e.target.value)} />
         <label htmlFor="gender">성별</label>
-        <select id="gender" name="gender" onChange={e => setGender(e.target.value)}>
-          <option value="none">상관 없음</option>
-          <option value="male">남성</option>
-          <option value="female">여성</option>
-        </select>
+        <Select id="gender" options={GENDER_OPTIONS} onChangeSelect={e => setGender(e.target.value)} />
         <StButtons>
           <StButton type="submit" disabled={!email || !password || !confirmPassword || !nickname || !age || !gender}>
             회원가입
@@ -163,15 +172,17 @@ const SignUpPage = () => {
 };
 
 const StContainer = styled.div`
-  ${ColumnCenter}
-  width: 100vw;
-  height: 100vh;
+  ${ColumnCenter};
+  width: 100%;
+  padding: 20px 0 20px 0;
+  //padding: 20px 0 20px 0;
+  justify-content: flex-start;
   background-color: whitesmoke;
 `;
 
 const StForm = styled.form`
   width: 30%;
-  ${ColumnCenter}
+  ${ColumnCenter};
   gap: 15px;
   label {
     width: 95%;
@@ -190,6 +201,9 @@ const StForm = styled.form`
   }
   select {
     outline: none;
+  }
+  div {
+    width: 100%;
   }
 `;
 
