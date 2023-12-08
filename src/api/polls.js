@@ -1,4 +1,4 @@
-import {collection, addDoc, getDocs, getDoc, updateDoc, doc} from 'firebase/firestore';
+import {collection, addDoc, getDocs, getDoc, updateDoc, doc, query, where} from 'firebase/firestore';
 import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 
 import {db, storage} from '../shared/firebase/firebase';
@@ -37,4 +37,21 @@ export const uploadThumbnail = async (pollId, imgFile) => {
   const imageRef = ref(storage, `${pollId}/thumbnail`);
   await uploadBytes(imageRef, imgFile);
   return getDownloadURL(imageRef);
+};
+
+export const getPollByTargetIds = async targetPollIds => {
+  const pollsRef = collection(db, 'polls');
+  const q = query(pollsRef, where('__name__', 'in', targetPollIds));
+  const querySnapshot = await getDocs(q);
+
+  const initialPolls = [];
+  querySnapshot.forEach(doc => {
+    const data = {
+      id: doc.id,
+      ...doc.data(),
+    };
+    initialPolls.push(data);
+  });
+  console.log('initialPolls', initialPolls);
+  return initialPolls;
 };

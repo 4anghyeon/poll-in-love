@@ -17,6 +17,16 @@ export const findParticipantByPollId = async pollId => {
   return data;
 };
 
+export const findParticipantByUserEmail = async userEmail => {
+  const selectQuery = await query(participantsRef, where('participant', '==', userEmail));
+  const querySnapshot = await getDocs(selectQuery);
+  const data = [];
+  querySnapshot.docs.forEach(doc => {
+    data.push(doc.data());
+  });
+  return data;
+};
+
 export const findParticipantByPollIdAndUserId = async (pollId, userId) => {
   const selectQuery = await query(participantsRef, where('pollId', '==', pollId), where('participant', '==', userId));
   const querySnapshot = await getDocs(selectQuery);
