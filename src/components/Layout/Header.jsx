@@ -50,7 +50,6 @@ const Header = () => {
           <StAvatar>
             <RxAvatar size="45" color="white" onClick={onClickAvatar} />
           </StAvatar>
-
           {isListVisible ? (
             <StList>
               <Link to={`/mypage/${user?.id}`}>

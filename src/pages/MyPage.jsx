@@ -1,38 +1,53 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import {auth, db} from 'shared/firebase/firebase';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getUserByEmail} from 'api/users';
-import {getPolls} from 'api/polls';
+import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import {Link} from 'react-router-dom';
 import theme from 'styles/theme';
 import {DEFAULT_IMAGE} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
+import {collection, addDoc, getDocs, getDoc, updateDoc, doc, query, where} from 'firebase/firestore';
+import {getItmesByTargetIds} from 'api/items';
 
 const MyPage = () => {
-  //   const {id} = useParams();
-  //   console.log(id);
-  const {data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
-
-  const {data: submitPolls} = useQuery({
-    queryKey: ['submitPolls'],
-    queryFn: () => findParticipantByUserEmail(auth.currentUser.email),
-  });
-
   const {data: user} = useQuery({
     queryKey: ['user'],
     queryFn: () => getUserByEmail(auth.currentUser.email),
   });
-  console.log(submitPolls);
 
-  const filteredPolls = pollsData?.filter(poll => {
-    return submitPolls?.map(submitPoll => submitPoll.pollId === poll.pollId);
+  const {data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
+
+  const {data: participatedPolls} = useQuery({
+    queryKey: ['participatedPolls'],
+    queryFn: () => findParticipantByUserEmail(auth.currentUser.email),
   });
-  console.log('filteredPolls', filteredPolls);
+
+  const targetPollIds = participatedPolls?.map(poll => poll.pollId) || [];
+
+  const {data: submitPolls} = useQuery({
+    queryKey: ['submitPolls', targetPollIds],
+    queryFn: () => getPollByTargetIds(targetPollIds),
+    enabled: targetPollIds.length > 0,
+  });
 
   const writtenPolls = pollsData?.filter(poll => poll.writer === auth.currentUser.email);
+
+  console.log(user?.items);
+  const {data: boughtItems} = useQuery({
+    queryKey: ['bouthItems', user?.items],
+    queryFn: () => getItmesByTargetIds(user?.items),
+    enabled: user?.items.length > 0,
+  });
+
+  console.log('boughtItems', boughtItems);
+  const onClickResultDownload = e => {
+    e.stopPropagation();
+    alert('hi');
+  };
 
   return (
     <StContainer>
@@ -65,7 +80,7 @@ const MyPage = () => {
         </div>
       </StProfile>
       <StWrittenPolls>
-        <h1> 등록한 설문</h1>
+        <h1> 작성한 설문</h1>
         <StWrapper>
           {writtenPolls?.length === 0 ? (
             <div>아직 등록한 설문이 없어요!</div>
@@ -76,7 +91,7 @@ const MyPage = () => {
                 <div> {poll.writer}</div>
                 <div>{poll.title}</div>
                 <div>{poll.point}p</div>
-                <Button>설문 결과 다운받기</Button>
+                <Button onClick={onClickResultDownload}>설문 결과 다운받기</Button>
               </Link>
             ))
           )}
@@ -85,16 +100,33 @@ const MyPage = () => {
       <StSubmittedPolls>
         <h1>참여한 설문</h1>
         <StWrapper>
-          {filteredPolls?.length === 0 ? (
+          {submitPolls?.length === 0 ? (
             <div>아직 참여한 설문이 없어요!</div>
           ) : (
-            filteredPolls?.map((poll, index) => (
+            submitPolls?.map((poll, index) => (
               <Link to={`/poll/${poll.id}`} key={index}>
                 <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
                 <div> {poll.writer}</div>
                 <div>{poll.title}</div>
                 <div>{poll.point}p</div>
               </Link>
+            ))
+          )}
+        </StWrapper>
+      </StSubmittedPolls>
+      <StSubmittedPolls>
+        <h1>구입한 아이템</h1>
+        <StWrapper>
+          {boughtItems?.length === 0 ? (
+            <div>아직 구매한 아이템이 없어요!</div>
+          ) : (
+            boughtItems?.map((item, index) => (
+              <div key={index}>
+                <img src={item.imageUrl} />
+                <div> {item.name}</div>
+                <div>{item.point}</div>
+                <div>{item.sale}p</div>
+              </div>
             ))
           )}
         </StWrapper>
