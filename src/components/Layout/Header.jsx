@@ -59,6 +59,9 @@ const Header = () => {
               <Link to="/enroll">
                 <li>설문 등록</li>
               </Link>
+              <Link to="/shop">
+                <li>포인트 상점</li>
+              </Link>
               <li onClick={logOutUser}>로그아웃</li>
             </StList>
           ) : null}
@@ -92,6 +95,7 @@ const StDiv = styled.div`
 
 const StList = styled.ul`
   position: absolute;
+  z-index: 9999;
   background-color: whitesmoke;
   color: black;
   right: 3%;

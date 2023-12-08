@@ -88,7 +88,7 @@ const SignUpPage = () => {
       else if (errorCode === 'auth/invalid-email') toast.error('유효하지 않은 이메일 입니다.');
     }
   };
-  // console.log(email, password, confirmPassword, nickname, age, gender);
+
   return (
     <StContainer>
       <StForm onSubmit={onSubmitSignUp}>
