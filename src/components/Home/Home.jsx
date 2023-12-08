@@ -33,7 +33,7 @@ const Home = () => {
 
   useEffect(() => {
     if (pollsData) {
-      setAllPolls(pollsData.sort((a, b) => a.dueDate.seconds - b.dueDate.seconds));
+      setAllPolls(pollsData.sort((a, b) => a.dueDate?.seconds - b.dueDate?.seconds));
     }
   }, [pollsData]);
 
@@ -67,8 +67,8 @@ const Home = () => {
         {/*메달달기 */}
         <StShopBox>
           {hotItems.map((item, index) => (
-            <Link to="/shop">
-              <StShopCard key={index}>
+            <Link to="/shop" key={index}>
+              <StShopCard>
                 <StShopImg src={item.imageUrl} />
                 <StShopTitle>{item.name}</StShopTitle>
                 <StShopPrice>{item.point}p</StShopPrice>

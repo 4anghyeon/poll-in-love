@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/images/logoImge.png';
 import {RxAvatar} from 'react-icons/rx';
+import {RxHamburgerMenu} from 'react-icons/rx';
 import {NavLink, Link} from 'react-router-dom';
 import theme from 'styles/theme';
 import {auth} from 'shared/firebase/firebase';
@@ -42,13 +43,13 @@ const Header = () => {
   return (
     <StHeader>
       <NavLink to="/">
-        <img src={logo} width={300} height={40} alt="logo" />
+        <img src={logo} width={250} height={32} alt="logo" />
       </NavLink>
       {currentUser ? (
         <StDiv>
-          <span>{user?.nickname}님 반갑습니다!</span>
+          <span>반가워요 {user?.nickname}님!</span>
           <StAvatar>
-            <RxAvatar size="45" color="white" onClick={onClickAvatar} />
+            <RxHamburgerMenu size="35" color="white" onClick={onClickAvatar} />
           </StAvatar>
           {isListVisible ? (
             <StList>
@@ -79,17 +80,25 @@ export default Header;
 
 const StHeader = styled.header`
   background-color: ${theme.COLOR.purple};
-  height: 50px;
+  height: 58px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0px 5px 16px 0px #00000033;
 `;
 
 const StDiv = styled.div`
+  & span {
+    color: white;
+    font-size: ${theme.FONT_SIZE.lg};
+  }
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 `;
 
 const StList = styled.ul`
@@ -98,8 +107,9 @@ const StList = styled.ul`
   background-color: whitesmoke;
   color: black;
   right: 3%;
-  top: 5%;
+  top: 55%;
   border-radius: 10px;
+  box-shadow: 0px 8px 16px 0px #00000033;
   & li {
     margin: 5px 0px;
     padding: 10px;

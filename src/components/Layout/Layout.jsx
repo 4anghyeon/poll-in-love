@@ -22,4 +22,5 @@ export default Layout;
 const StContent = styled.section`
   ${RowCenter};
   min-height: calc(100vh - 100px);
+  padding-top: 80px;
 `;

@@ -12,10 +12,10 @@ import theme from '../../styles/theme';
  * - 기본 선택 값 (선택)
  * @returns {Element}
  */
-const Select = ({options = [], onChangeSelect, defaultValue}) => {
+const Select = ({options = [], onChangeSelect, defaultValue, value}) => {
   return (
     <StSelectContainer>
-      <select onChange={onChangeSelect} value={defaultValue}>
+      <select onChange={onChangeSelect} value={defaultValue} defaultValue={value}>
         {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.text}

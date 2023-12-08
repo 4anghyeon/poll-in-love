@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <StFooter>
       <p>
-        Copyright 2023. <strong>Hot 6</strong> All rights reserved.
+        Copyright 2023 &copy; <strong>Hot 6</strong> All rights reserved.
       </p>
     </StFooter>
   );
@@ -19,6 +19,6 @@ const StFooter = styled.footer`
   ${() => RowCenter}
   height: 50px;
   font-size: ${theme.FONT_SIZE.sm};
-  color: white;
-  background-color: ${theme.COLOR.purple};
+  color: rgba(0, 0, 0, 0.7);
+  background-color: whitesmoke;
 `;

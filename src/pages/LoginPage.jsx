@@ -7,8 +7,9 @@ import logo from '../assets/images/logoImge.png';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from 'styles/theme';
 import {FaGoogle} from 'react-icons/fa';
-import {NavLink, useNavigate} from '../../node_modules/react-router-dom/dist/index';
+import {NavLink, useNavigate} from 'react-router-dom';
 import {addUser, getUserByEmail} from 'api/users';
+import {toast} from 'react-toastify';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -18,36 +19,37 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const onChangeValue = event => {
-    const {
-      target: {name, value},
-    } = event;
-    if (name === 'email') setEmail(value);
-    if (name === 'password') setPassword(value);
-  };
-  const validateEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) setEmailError('이메일 아이디를 입력해주세요.');
-    else if (!emailRegex.test(email)) setEmailError('올바른 이메일 형식이 아닙니다.');
-    else setEmailError('');
+  const onChangeEmail = e => {
+    setEmail(() => {
+      const newEmail = e.target.value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!newEmail) setEmailError('이메일 아이디를 입력해주세요.');
+      else if (!emailRegex.test(newEmail)) setEmailError('올바른 이메일 형식이 아닙니다.');
+      else setEmailError('');
+      return newEmail;
+    });
   };
 
-  const validatePassword = () => {
-    if (!password) setPasswordError('비밀번호를 입력해주세요.');
-    else if (password.length < 6) setPasswordError('비밀번호는 6자 이상이어야 합니다.');
-    else setPasswordError('');
+  const onChangePassword = e => {
+    setPassword(() => {
+      const newPassword = e.target.value;
+      if (!newPassword) setPasswordError('비밀번호를 입력해주세요.');
+      else if (newPassword.length < 6) setPasswordError('비밀번호는 6자 이상이어야 합니다.');
+      else setPasswordError('');
+      return newPassword;
+    });
   };
 
   const onClickLoginButton = async e => {
     e.preventDefault();
-    validateEmail();
-    validatePassword();
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('user with signIn', userCredential.user);
       navigate('/');
     } catch (error) {
       console.log(error);
+      console.log(error.code);
+      if (error.code === 'auth/invalid-credential') toast.error('비밀번호 또는 이메일이 일치하지 않습니다.');
     }
   };
 
@@ -85,22 +87,20 @@ const LoginPage = () => {
           placeholder="이메일 아이디를 입력하세요."
           type="email"
           name="email"
-          onChange={onChangeValue}
+          onChange={onChangeEmail}
           value={email}
           required
-          onBlur={validateEmail}
         />
-        <span style={{color: 'red'}}>{emailError}</span>
+        <div style={{color: 'red'}}>{emailError}</div>
         <input
           placeholder="비밀번호를 입력하세요."
           type="password"
           name="password"
-          onChange={onChangeValue}
+          onChange={onChangePassword}
           value={password}
           required
-          onBlur={validatePassword}
         />
-        <span style={{color: 'red'}}>{passwordError}</span>
+        <div style={{color: 'red'}}>{passwordError}</div>
         <StButtons>
           <StButton type="submit">로그인</StButton>
           <StButton type="button" onClick={onClickGoogleLoginButton} $bgColor={theme.COLOR.pink}>

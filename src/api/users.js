@@ -30,6 +30,15 @@ export const addUserItem = async (userId, itemId) => {
   });
 };
 
+export const updateUser = async (userId, nickname, age, gender) => {
+  const userRef = doc(db, 'users', userId);
+  return updateDoc(userRef, {
+    nickname,
+    age,
+    gender,
+  });
+};
+
 // queryFns
 export const getUserById = async userId => {
   const userRef = doc(db, 'users', userId);
@@ -38,7 +47,7 @@ export const getUserById = async userId => {
 };
 
 export const getUserByEmail = async userEmail => {
-  const q = query(collection(db, 'users'), where('email', '==', userEmail));
+  const q = query(usersRef, where('email', '==', userEmail));
   try {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.docs.length > 0) {
