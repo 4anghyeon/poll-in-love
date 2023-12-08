@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {DEFAULT_IMAGE, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
-import {getPolls} from 'api/polls';
+import {getPollsWithNotExpired} from 'api/polls';
 import {useQuery} from '@tanstack/react-query';
 import {BarLoader} from 'react-spinners';
 import {getItems} from 'api/items';
@@ -12,23 +12,44 @@ import moment from 'moment/moment';
 import {FaRegCalendarAlt} from 'react-icons/fa';
 
 const Home = () => {
-  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
+  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPollsWithNotExpired});
   const {isLoading: isLoadingItems, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
+
+  const [hotItems, setHotItems] = useState([]);
+  const [allPolls, setAllPolls] = useState([]);
+  const [randomPolls, setRandomPolls] = useState([]);
+
+  useEffect(() => {
+    if (pollsData) {
+      setRandomPolls(pollsData.sort(() => Math.random() - Math.random()).slice(0, 4));
+    }
+  }, [pollsData]);
+
+  useEffect(() => {
+    if (itemsData) {
+      setHotItems(itemsData.sort((a, b) => b.sales - a.sales).slice(0, 5));
+    }
+  }, [itemsData]);
+
+  useEffect(() => {
+    if (pollsData) {
+      setAllPolls(pollsData.sort((a, b) => a.dueDate.seconds - b.dueDate.seconds));
+    }
+  }, [pollsData]);
 
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
     <>
       <StMainBox>
         <StTitleBox>
-          <h1>오늘의 PICK📌</h1>
+          <h1>오늘의 PICK</h1>
         </StTitleBox>
-        {/* 포인트 많은 순서대로 구현예정 4개*/}
+
         <StPickBox>
-          {pollsData.map((poll, index) => (
+          {randomPolls.map((poll, index) => (
             <Link to={`/poll/${poll.id}`} key={index}>
               <StPickCard>
                 <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                {/* 닉네임 변경예정*/}
                 <StPickId> {poll.nickname}</StPickId>
                 <StPickTitle>{poll.title}</StPickTitle>
                 <StDueDate>
@@ -41,13 +62,13 @@ const Home = () => {
           ))}
         </StPickBox>
         <StTitleBox>
-          <h1>SHOP RANKING🔥</h1>
+          <h1>SHOP RANKING</h1>
         </StTitleBox>
-        {/* 데이터 부를 시 5개만 불러오기, 팔린 순서대로 구현예정 */}
+        {/*메달달기 */}
         <StShopBox>
-          {itemsData.map((item, index) => (
-            <Link to="/shop" key={index}>
-              <StShopCard>
+          {hotItems.map((item, index) => (
+            <Link to="/shop">
+              <StShopCard key={index}>
                 <StShopImg src={item.imageUrl} />
                 <StShopTitle>{item.name}</StShopTitle>
                 <StShopPrice>{item.point}p</StShopPrice>
@@ -55,8 +76,8 @@ const Home = () => {
             </Link>
           ))}
         </StShopBox>
-        {/* 검색어 구현 예정 , 최신순으로 불러오기*/}
-        {pollsData.map((poll, index) => (
+        {/* 검색어 구현 예정 */}
+        {allPolls.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
@@ -163,7 +184,7 @@ const StPickTitle = styled.div`
   word-break: break-all;
   word-wrap: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 `;
 
