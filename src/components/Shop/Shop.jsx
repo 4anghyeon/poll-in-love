@@ -49,11 +49,11 @@ const Shop = () => {
 
   const clickedBuyButton = async () => {
     if (user.point < buyItem.point) {
-      toast.error('포인트가 부족합니다.');
+      toast.error('포인트가 부족합니다😭');
       return;
     }
     updatePoint();
-    toast.success('구매가 완료되었습니다.');
+    toast.success('구매가 완료되었습니다. 마이페이지에서 확인하세요!😊');
     setModalIsOpen(false);
   };
 
