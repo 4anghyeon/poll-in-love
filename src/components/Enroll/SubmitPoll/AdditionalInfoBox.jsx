@@ -48,6 +48,7 @@ const AdditionalInfoBox = () => {
         <DatePicker
           selected={dueDate}
           locale={locale}
+          minDate={new Date()}
           dateFormat={'yyyy년 MM월 dd일'}
           onChange={date => onChangeDate(date)}
         />
