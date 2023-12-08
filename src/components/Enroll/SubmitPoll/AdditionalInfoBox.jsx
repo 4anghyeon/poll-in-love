@@ -4,23 +4,7 @@ import Select from '../../Common/Select';
 import {ColumnCenter} from '../../../styles/CommonStyles';
 import theme from '../../../styles/theme';
 import {useChangeAdditionalInfo} from '../../../hooks/useChangeAdditionalInfo';
-
-const AGE_OPTIONS = [
-  {value: 0, text: '상관 없음'},
-  {value: 10, text: '10대'},
-  {value: 20, text: '20대'},
-  {value: 30, text: '30대'},
-  {value: 40, text: '40대'},
-  {value: 50, text: '50대'},
-  {value: 60, text: '60대'},
-  {value: 70, text: '70대'},
-];
-
-const GENDER_OPTIONS = [
-  {value: 'none', text: '상관 없음'},
-  {value: 'male', text: '남성'},
-  {value: 'female', text: '여성'},
-];
+import {AGE_OPTIONS, GENDER_OPTIONS} from '../../../utils/defaultValue';
 
 const AdditionalInfoBox = () => {
   const onChangePoint = useChangeAdditionalInfo('point');
