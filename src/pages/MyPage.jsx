@@ -2,15 +2,20 @@ import React, {useState} from 'react';
 import {auth} from 'shared/firebase/firebase';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getUserByEmail, updateUser} from 'api/users';
+import {Link} from 'react-router-dom';
+import {auth} from 'shared/firebase/firebase';
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
-import {Link} from 'react-router-dom';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
 import {getItmesByTargetIds} from 'api/items';
 import Select from 'components/Common/Select';
+import {downloadDataAsExcel} from '../utils/helper';
+import {ClipLoader} from 'react-spinners';
+import {toast} from 'react-toastify';
+import TOAST_OPTION from '../utils/toast-option';
 
 const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -51,9 +56,18 @@ const MyPage = () => {
     onSuccess: async () => await queryClient.invalidateQueries(['user']),
   });
 
-  const onClickResultDownload = e => {
-    e.stopPropagation();
-    alert('hi');
+  const {isPending: isDownloadFending, mutate: downloadExcel} = useMutation({
+    mutationFn: pollId => {
+      return downloadDataAsExcel(pollId);
+    },
+    onSuccess: () => {
+      toast.success('다운로드에 성공했습니다.', TOAST_OPTION.leftBottom);
+    },
+  });
+
+  console.log('boughtItems', boughtItems);
+  const onClickResultDownload = async pollId => {
+    downloadExcel(pollId);
   };
 
   const onEditDone = () => {
@@ -139,16 +153,20 @@ const MyPage = () => {
           {writtenPolls?.length === 0 ? (
             <div>아직 등록한 설문이 없어요!</div>
           ) : (
-            writtenPolls?.map((poll, index) => (
-              <div key={index}>
+            writtenPolls?.map(poll => (
+              <StMyPollContainer key={poll.id}>
                 <Link to={`/poll/${poll.id}`}>
-                  <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
+                  <img src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
                   <div> {poll.writer}</div>
                   <div>{poll.title}</div>
                   <div>{poll.point}p</div>
                 </Link>
-                <Button onClick={onClickResultDownload}>설문 결과 다운받기</Button>
-              </div>
+                {isDownloadFending ? (
+                  <ClipLoader color={theme.COLOR.purple} height={20} width={20} />
+                ) : (
+                  <Button onClick={onClickResultDownload.bind(null, poll.id)}>설문 결과 다운받기</Button>
+                )}
+              </StMyPollContainer>
             ))
           )}
         </StWrapper>
@@ -247,4 +265,8 @@ const StWrapper = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   place-items: center;
   margin: 20px;
+`;
+
+const StMyPollContainer = styled.div`
+  ${ColumnCenter}
 `;

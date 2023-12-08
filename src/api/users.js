@@ -1,14 +1,14 @@
 import {
-  collection,
   addDoc,
-  getDoc,
-  query,
-  where,
-  doc,
-  updateDoc,
-  increment,
-  getDocs,
   arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  increment,
+  query,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 import {db} from '../shared/firebase/firebase';
 
@@ -56,6 +56,7 @@ export const getUserByEmail = async userEmail => {
     }
   } catch (error) {
     console.error('Error fetching user:', error);
+    return Error(error);
   }
   return null;
 };
