@@ -10,6 +10,7 @@ import {FaGoogle} from 'react-icons/fa';
 import {NavLink, useNavigate} from 'react-router-dom';
 import {addUser, getUserByEmail} from 'api/users';
 import {toast} from 'react-toastify';
+import TOAST_OPTION from '../utils/toast-option';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -45,6 +46,10 @@ const LoginPage = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('user with signIn', userCredential.user);
+      toast.success(`환영합니다!`, {
+        ...TOAST_OPTION.topRight,
+        icon: '🎉',
+      });
       navigate('/');
     } catch (error) {
       console.log(error);
@@ -71,6 +76,10 @@ const LoginPage = () => {
         };
         await addUser(newUser);
       }
+      toast.success(`환영합니다!`, {
+        ...TOAST_OPTION.topRight,
+        icon: '👋',
+      });
       navigate('/');
     } catch (error) {
       console.error('Google Login Error:', error.message);

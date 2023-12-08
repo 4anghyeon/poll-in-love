@@ -19,14 +19,22 @@ import moment from 'moment';
 const PollPage = () => {
   const poll = useLoaderData();
   const [answer, setAnswer] = useState({...poll});
+  const [isInvalid, setIsInvalid] = useState(false);
+  const [isMe, setIsMe] = useState(false);
   const navigate = useNavigate();
 
   const count = answer.questions.map(q => q.check === true).filter(q => q).length;
   const progressPercent = (count / (poll.questions.length || 1)) * 100;
 
+  // 등록 유저 정보
+  const {isSuccess: isGetUserSuccess, data: user} = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUserByEmail(auth.currentUser?.email),
+  });
+
   const {isPending: isParticipantPending, data: participants} = useQuery({
     queryKey: ['poll', poll.id],
-    queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, auth.currentUser.email),
+    queryFn: findParticipantByPollIdAndUserId.bind(null, poll.id, auth.currentUser?.email),
   });
   const isSurveyed = participants?.length > 0;
   const isDueDated = moment().subtract(1, 'day').isAfter(moment.unix(poll.dueDate?.seconds));
@@ -46,14 +54,14 @@ const PollPage = () => {
       return addParticipant(newParticipant);
     },
     onSuccess: async () => {
-      const {id} = await getUserByEmail(auth.currentUser.email);
+      const {id} = await getUserByEmail(auth.currentUser?.email);
       updatePoint({userId: id, point: +poll.point});
     },
   });
 
   const onClickSubmitButton = () => {
     const answers = answer.questions.map(q => q.answer);
-    addAnswer({pollId: poll.id, participant: auth.currentUser.email, answers});
+    addAnswer({pollId: poll.id, participant: auth.currentUser?.email, answers});
   };
 
   const onClickBack = () => {
@@ -68,6 +76,26 @@ const PollPage = () => {
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    if (user?.email === poll.writer) setIsMe(true);
+    if (isGetUserSuccess) {
+      // 설문의 성별 조건이 상관 없음이 아니고, 나의 성별과 맞지 않으면 튕겨냄
+      if (poll.gender !== 'none' && poll.gender !== user.gender) {
+        setIsInvalid(true);
+      }
+      if (poll.age !== 0 && +poll.age !== user.age) {
+        setIsInvalid(true);
+      }
+    }
+  }, [isGetUserSuccess]);
+
+  useEffect(() => {
+    if (!auth.currentUser) {
+      toast.error('로그인 후 이용할 수 있습니다!', TOAST_OPTION.topCenter);
+      navigate('/login', {replace: true});
+    }
+  }, [auth]);
+
   if (isParticipantPending) {
     return (
       <BeatLoader color={theme.COLOR.pink} height={10} width={300} aria-label="Loading Spinner" data-testid="loader" />
@@ -76,7 +104,16 @@ const PollPage = () => {
 
   return (
     <StPollPageContainer>
-      {(isSurveyed || isDueDated) && (
+      {!isMe && isInvalid && (
+        <Modal style={modalStyle} isOpen={true} ariaHideApp={false}>
+          <StModalContent>
+            <h1>{user.nickname}님은 해당 설문 조건에 해당하지 않습니다. 🥺</h1>
+            <p>다른 설문에 참여 해보세요.</p>
+            <Button onClick={onClickBack}>다른 설문 보러가기</Button>
+          </StModalContent>
+        </Modal>
+      )}
+      {!isMe && !isInvalid && (isSurveyed || isDueDated) && (
         <Modal style={modalStyle} isOpen={true} ariaHideApp={false}>
           <StModalContent>
             {isSurveyed && <h1>이미 참여하신 설문입니다. 🥺</h1>}
@@ -106,14 +143,14 @@ const PollPage = () => {
         </StProgressBar>
         <StQuestionContainer>
           {poll.questions.map((question, index) => (
-            <QuestionBox key={question.id} index={index} question={question} setAnswer={setAnswer} />
+            <QuestionBox key={question.id} index={index} question={question} setAnswer={setAnswer} isMe={isMe} />
           ))}
         </StQuestionContainer>
         {isSurveyed > 0 ? (
           <StSubmitButton disabled={true}>이미 완료한 설문입니다.</StSubmitButton>
         ) : (
-          <StSubmitButton onClick={onClickSubmitButton} disabled={isPending || progressPercent !== 100}>
-            제출
+          <StSubmitButton onClick={onClickSubmitButton} disabled={isPending || progressPercent !== 100 || isMe}>
+            {isMe ? '본인이 작성한 설문은 답변할 수 없습니다.' : '제출'}
           </StSubmitButton>
         )}
       </StPollContainer>
