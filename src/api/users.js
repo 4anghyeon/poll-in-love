@@ -1,4 +1,15 @@
-import {collection, addDoc, getDoc, query, where, doc, updateDoc, increment, getDocs} from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDoc,
+  query,
+  where,
+  doc,
+  updateDoc,
+  increment,
+  getDocs,
+  arrayUnion,
+} from 'firebase/firestore';
 import {db} from '../shared/firebase/firebase';
 
 const usersRef = collection(db, 'users');
@@ -9,6 +20,13 @@ export const updateUserPoint = async (userId, point) => {
   const userRef = doc(db, 'users', userId);
   return updateDoc(userRef, {
     point: increment(point),
+  });
+};
+
+export const addUserItem = async (userId, itemId) => {
+  const userRef = doc(db, 'users', userId);
+  return updateDoc(userRef, {
+    items: arrayUnion(itemId),
   });
 };
 

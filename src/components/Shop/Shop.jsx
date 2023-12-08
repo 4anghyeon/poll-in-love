@@ -3,9 +3,12 @@ import styled from 'styled-components';
 import {ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {BarLoader} from 'react-spinners';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useMutation} from '@tanstack/react-query';
 import {getItems} from 'api/items';
 import Modal from 'react-modal';
+import {addUserItem, getUserByEmail, updateUserPoint} from 'api/users';
+import {auth} from 'shared/firebase/firebase';
+import {toast} from 'react-toastify';
 
 const CATEGORIES = ['전체', '편의점', '카페', '치킨', '영화'];
 
@@ -16,10 +19,42 @@ const Shop = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCategory, setSeletedCategory] = useState(CATEGORIES[0]);
   const [selectedItems, setSelectedItems] = useState(itemsData);
+  const {data: user, refetch} = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUserByEmail(auth.currentUser.email),
+  });
+
+  const {mutate: updatePoint} = useMutation({
+    mutationFn: () => {
+      return updateUserPoint(user.id, -buyItem.point);
+    },
+    onSuccess: () => {
+      addItem();
+    },
+  });
+
+  const {mutate: addItem} = useMutation({
+    mutationFn: () => {
+      return addUserItem(user.id, buyItem.id);
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const clickedItemButton = item => {
     setBuyItem(item);
     setModalIsOpen(true);
+  };
+
+  const clickedBuyButton = async () => {
+    if (user.point < buyItem.point) {
+      toast.error('포인트가 부족합니다😭');
+      return;
+    }
+    updatePoint();
+    toast.success('구매가 완료되었습니다. 마이페이지에서 확인하세요!😊');
+    setModalIsOpen(false);
   };
 
   useEffect(() => {
@@ -44,9 +79,8 @@ const Shop = () => {
           <h2>포인트를 사용하여 상품을 구매해보세요! 🎉</h2>
         </div>
         <div>
-          {/* 정보 불러올 예정 */}
-          <p>으랏차차님😊 안녕하세요!</p>
-          <p>포인트 : 1000p </p>
+          <p>{user?.nickname}님😊 안녕하세요!</p>
+          <p>포인트 : {user?.point}p </p>
         </div>
       </StBanner>
       <StCategoryListBox>
@@ -82,9 +116,8 @@ const Shop = () => {
           <StItemCategory>{buyItem?.category}</StItemCategory>
           <StItemTitle>{buyItem?.name}</StItemTitle>
           <StModalItemPoint>{buyItem?.point}p</StModalItemPoint>
-          {/* 정보 불러올 예정 */}
-          <p>잔액포인트 : 100p </p>
-          <StModalButton>나에게 선물하기</StModalButton>
+          <p>잔액포인트 : {user?.point}p </p>
+          <StModalButton onClick={clickedBuyButton}>나에게 선물하기</StModalButton>
         </StModalInnerBox>
       </Modal>
     </StItemContainer>
