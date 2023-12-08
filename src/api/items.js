@@ -1,4 +1,4 @@
-import {collection, getDocs, query, where} from 'firebase/firestore';
+import {collection, doc, getDocs, increment, query, updateDoc, where} from 'firebase/firestore';
 import {db} from '../shared/firebase/firebase';
 
 const itemsRef = collection(db, 'items');
@@ -27,4 +27,11 @@ export const getItmesByTargetIds = async targetItemIds => {
   });
   console.log('initialItems', initialItems);
   return initialItems;
+};
+
+export const incrementSales = async itemId => {
+  const itemRef = doc(db, 'items', itemId);
+  return updateDoc(itemRef, {
+    sales: increment(1),
+  });
 };

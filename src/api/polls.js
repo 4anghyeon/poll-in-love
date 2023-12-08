@@ -1,5 +1,5 @@
-import {collection, addDoc, getDocs, getDoc, updateDoc, doc, query, where} from 'firebase/firestore';
-import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where} from 'firebase/firestore';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
 
 import {db, storage} from '../shared/firebase/firebase';
 
@@ -13,6 +13,23 @@ export const addPoll = async newPoll => {
 export const getPolls = async () => {
   const res = await getDocs(pollsRef);
   const polls = res.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  return polls;
+};
+
+export const getPollsWithNotExpired = async () => {
+  const today = new Date();
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(0);
+
+  const q = query(collection(db, 'polls'), where('dueDate', '>=', today));
+  const querySnapshot = await getDocs(q);
+
+  const polls = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data(),
   }));
