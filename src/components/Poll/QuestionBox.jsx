@@ -28,7 +28,7 @@ const QuestionBox = ({question, index, setAnswer}) => {
             {question.answers.map(data => {
               return (
                 <label key={data.id}>
-                  <input type="radio" name="answer" value={`${data.answer}`} onChange={onChangeInput} />
+                  <input type="radio" name={question.id} value={`${data.answer}`} onChange={onChangeInput} />
                   <span>{data.answer}</span>
                 </label>
               );
