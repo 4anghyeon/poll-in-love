@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import {ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {BarLoader} from 'react-spinners';
-import {useQuery, useMutation} from '@tanstack/react-query';
-import {getItems} from 'api/items';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {getItems, incrementSales} from 'api/items';
 import Modal from 'react-modal';
 import {addUserItem, getUserByEmail, updateUserPoint} from 'api/users';
 import {auth} from 'shared/firebase/firebase';
@@ -36,6 +36,15 @@ const Shop = () => {
   const {mutate: addItem} = useMutation({
     mutationFn: () => {
       return addUserItem(user.id, buyItem.id);
+    },
+    onSuccess: () => {
+      incrementSale(buyItem.id);
+    },
+  });
+
+  const {mutate: incrementSale} = useMutation({
+    mutationFn: () => {
+      return incrementSales(buyItem.id);
     },
     onSuccess: () => {
       refetch();
