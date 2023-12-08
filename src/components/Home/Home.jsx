@@ -46,8 +46,8 @@ const Home = () => {
         {/* 데이터 부를 시 5개만 불러오기, 팔린 순서대로 구현예정 */}
         <StShopBox>
           {itemsData.map((item, index) => (
-            <Link to="/shop">
-              <StShopCard key={index}>
+            <Link to="/shop" key={index}>
+              <StShopCard>
                 <StShopImg src={item.imageUrl} />
                 <StShopTitle>{item.name}</StShopTitle>
                 <StShopPrice>{item.point}p</StShopPrice>
