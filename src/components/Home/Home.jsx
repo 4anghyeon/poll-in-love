@@ -4,7 +4,7 @@ import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {DEFAULT_IMAGE, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
-import {getPolls} from 'api/polls';
+import {getPollsWithNotExpired} from 'api/polls';
 import {useQuery} from '@tanstack/react-query';
 import {BarLoader} from 'react-spinners';
 import {getItems} from 'api/items';
@@ -12,7 +12,7 @@ import moment from 'moment/moment';
 import {FaRegCalendarAlt} from 'react-icons/fa';
 
 const Home = () => {
-  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPolls});
+  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPollsWithNotExpired});
   const {isLoading: isLoadingItems, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
 
   const [hotItems, setHotItems] = useState([]);
