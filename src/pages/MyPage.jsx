@@ -3,7 +3,7 @@ import {auth} from 'shared/firebase/firebase';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getUserByEmail, updateUser} from 'api/users';
 import {Link} from 'react-router-dom';
-import {auth} from 'shared/firebase/firebase';
+
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
@@ -71,9 +71,6 @@ const MyPage = () => {
   };
 
   const onEditDone = () => {
-    // const nickname = modifiedNickname ?? user?.nickname;
-    // const age = modifiedAge ?? user?.age;
-    // const gender = modifiedGender ?? user?.gender;
     mutateToUpdateUser(modifiedNickname, modifiedAge, modifiedGender);
     setIsEditing(false);
   };
@@ -81,33 +78,27 @@ const MyPage = () => {
   console.log('bougtItems', boughtItems);
   return (
     <StContainer>
-      <h1>My Page</h1>
       <StProfile>
-        <h1>프로필</h1>{' '}
+        <StTitle>내 프로필</StTitle>
         {isEditing ? (
           <>
-            <div>
+            <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-            </div>
-            <div>
-              <span>닉네임</span>
 
+              <span>닉네임</span>
               <input type="text" defaultValue={user?.nickname} onChange={e => setModifiedNickname(e.target.value)} />
-            </div>
-            <div>
+
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-            </div>
-            <div>
+
               <span>성별</span>
               <Select
                 options={GENDER_OPTIONS}
                 onChangeSelect={e => setModifiedGender(e.target.value)}
                 value={user?.gender}
               />
-            </div>
-            <div>
+
               <span>연령대</span>
               <Select
                 id="age"
@@ -115,40 +106,40 @@ const MyPage = () => {
                 onChangeSelect={e => setModifiedAge(e.target.value)}
                 value={user?.age}
               />
-            </div>
-            <Button onClick={onEditDone} disabled={!modifiedNickname && !modifiedAge && !modifiedGender}>
-              수정완료
-            </Button>
-            <Button onClick={() => setIsEditing(false)}>수정취소</Button>
+            </StContent>
+            <StBtns>
+              <Button onClick={onEditDone} disabled={!modifiedNickname && !modifiedAge && !modifiedGender}>
+                수정완료
+              </Button>
+              <Button onClick={() => setIsEditing(false)}>수정취소</Button>
+            </StBtns>
           </>
         ) : (
           <>
-            <div>
+            <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-            </div>
-            <div>
+
               <span>닉네임</span>
               <p>{user?.nickname}</p>
-            </div>
-            <div>
+
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-            </div>
-            <div>
+
               <span>성별</span>
               <p>{user?.gender === 'male' ? '남성' : '여성'}</p>
-            </div>
-            <div>
+
               <span>연령대</span>
               <p>{user?.age}대</p>
-            </div>
-            <Button onClick={() => setIsEditing(true)}>회원정보 수정</Button>
+            </StContent>
+            <StBtns>
+              <Button onClick={() => setIsEditing(true)}>회원정보 수정</Button>
+            </StBtns>
           </>
         )}
       </StProfile>
-      <StWrittenPolls>
-        <h1> 작성한 설문</h1>
+      <StPollsContainer>
+        <StTitle>작성한 설문</StTitle>
         <StWrapper>
           {writtenPolls?.length === 0 ? (
             <div>아직 등록한 설문이 없어요!</div>
@@ -157,9 +148,7 @@ const MyPage = () => {
               <StMyPollContainer key={poll.id}>
                 <Link to={`/poll/${poll.id}`}>
                   <img src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
-                  <div> {poll.writer}</div>
                   <div>{poll.title}</div>
-                  <div>{poll.point}p</div>
                 </Link>
                 {isDownloadFending ? (
                   <ClipLoader color={theme.COLOR.purple} height={20} width={20} />
@@ -170,40 +159,42 @@ const MyPage = () => {
             ))
           )}
         </StWrapper>
-      </StWrittenPolls>
-      <StSubmittedPolls>
-        <h1>참여한 설문</h1>
+      </StPollsContainer>
+      <StPollsContainer>
+        <StTitle>참여한 설문</StTitle>
         <StWrapper>
           {submitPolls?.length === 0 ? (
             <div>아직 참여한 설문이 없어요!</div>
           ) : (
             submitPolls?.map((poll, index) => (
-              <Link to={`/poll/${poll.id}`} key={index}>
-                <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                <div> {poll.writer}</div>
-                <div>{poll.title}</div>
-                <div>{poll.point}p</div>
-              </Link>
+              <StMyPollContainer key={index}>
+                <Link to={`/poll/${poll.id}`}>
+                  <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
+                  <div> {poll.writer}</div>
+                  <div>{poll.title}</div>
+                  <div>{poll.point}p</div>
+                </Link>
+              </StMyPollContainer>
             ))
           )}
         </StWrapper>
-      </StSubmittedPolls>
-      <StSubmittedPolls>
-        <h1>구입한 아이템</h1>
+      </StPollsContainer>
+      <StPollsContainer>
+        <StTitle>구입한 아이템</StTitle>
         <StWrapper>
           {boughtItems === undefined ? (
             <div>아직 구매한 아이템이 없어요!</div>
           ) : (
             boughtItems?.map((item, index) => (
-              <div key={index}>
+              <StMyPollContainer key={index}>
                 <img src={item.imageUrl} />
                 <div> {item.name}</div>
                 <div>{item.point}p</div>
-              </div>
+              </StMyPollContainer>
             ))
           )}
         </StWrapper>
-      </StSubmittedPolls>
+      </StPollsContainer>
     </StContainer>
   );
 };
@@ -211,42 +202,38 @@ const MyPage = () => {
 export default MyPage;
 
 const StProfile = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: ${theme.COLOR.lightPink};
+  background-color: whitesmoke;
   width: inherit;
-  padding: 20px;
   line-height: 30px;
-  border-radius: 15px;
+  border-radius: 20px;
   font-size: ${theme.FONT_SIZE.lg};
-  & div {
-    ${RowCenter}
-    gap: 20px;
+  margin: 20px 0px;
+  padding-bottom: 20px;
+  box-shadow: 0px 8px 16px 0px #00000033;
+  input,
+  select {
+    width: 100%;
+    height: 45px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: 1px solid lightgrey;
   }
 `;
 
-const StWrittenPolls = styled.div`
-  background-color: ${theme.COLOR.pink};
-  border-radius: 15px;
-  margin: 20px 0px;
-  padding: 20px;
+const StPollsContainer = styled.div`
+  background-color: whitesmoke;
   width: inherit;
+  line-height: 30px;
+  border-radius: 20px;
+  font-size: ${theme.FONT_SIZE.lg};
+  margin: 20px 0px;
+  padding-bottom: 20px;
+  box-shadow: 0px 8px 16px 0px #00000033;
   & img {
     width: 200px;
     height: 200px;
-  }
-`;
-
-const StSubmittedPolls = styled.div`
-  background-color: ${theme.COLOR.pink};
-  border-radius: 15px;
-  margin: 20px 0px;
-  padding: 20px;
-  width: inherit;
-  & img {
-    width: 200px;
-    height: 200px;
+    border-radius: 20px;
+    box-shadow: 0px 8px 16px 0px #00000033;
   }
 `;
 
@@ -262,11 +249,43 @@ const StContainer = styled.div`
 const StWrapper = styled.div`
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   place-items: center;
   margin: 20px;
 `;
 
 const StMyPollContainer = styled.div`
   ${ColumnCenter}
+  gap: 15px;
+  text-align: center;
+`;
+
+const StTitle = styled.div`
+  background-color: ${theme.COLOR.pink};
+  width: 100%;
+  height: 50px;
+  border-radius: 20px 20px 0 0;
+  text-align: left;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  font-size: ${theme.FONT_SIZE.xl};
+  font-weight: 800;
+  color: white;
+`;
+
+const StContent = styled.div`
+  width: 100%;
+  border-radius: 0 0 20px 20px;
+  display: grid;
+  grid-template-columns: 0.4fr 1fr;
+  padding: 20px;
+  gap: 30px;
+`;
+
+const StBtns = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
 `;
