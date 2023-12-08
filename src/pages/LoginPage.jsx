@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
-import {auth, db, provider} from 'shared/firebase/firebase';
+import {auth, provider} from 'shared/firebase/firebase';
 import {signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
-import {addDoc, collection} from 'firebase/firestore';
 import logo from '../assets/images/logoImge.png';
 import 'react-toastify/dist/ReactToastify.css';
 import theme from 'styles/theme';
 import {FaGoogle} from 'react-icons/fa';
 import {NavLink, useNavigate} from '../../node_modules/react-router-dom/dist/index';
-import {addUser, setUser} from 'api/users';
+import {addUser, getUserByEmail} from 'api/users';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -56,18 +55,20 @@ const LoginPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log('Google Login Successful:', user);
+      const existUser = await getUserByEmail(user.email);
 
-      const newUser = {
-        nickname: user.displayName,
-        email: user.email,
-        point: 0,
-        age: null,
-        gender: null,
-        items: [],
-      };
-      addUser(newUser);
-      //   setUser(newUser);
+      if (!existUser) {
+        // 기존 유저가 없는 경우만 등록
+        const newUser = {
+          nickname: user.displayName,
+          email: user.email,
+          point: 0,
+          age: null,
+          gender: null,
+          items: [],
+        };
+        await addUser(newUser);
+      }
       navigate('/');
     } catch (error) {
       console.error('Google Login Error:', error.message);
