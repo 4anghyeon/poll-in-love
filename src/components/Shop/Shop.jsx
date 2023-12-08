@@ -9,12 +9,14 @@ import Modal from 'react-modal';
 import {addUserItem, getUserByEmail, updateUserPoint} from 'api/users';
 import {auth} from 'shared/firebase/firebase';
 import {toast} from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 const CATEGORIES = ['전체', '편의점', '카페', '치킨', '영화'];
 
 const Shop = () => {
+  const navigate = useNavigate();
+  const isLogin = auth.currentUser;
   const {isLoading, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
-
   const [buyItem, setBuyItem] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedCategory, setSeletedCategory] = useState(CATEGORIES[0]);
@@ -87,10 +89,14 @@ const Shop = () => {
           <h1>POINT SHOP</h1>
           <h2>포인트를 사용하여 상품을 구매해보세요! 🎉</h2>
         </div>
-        <div>
-          <p>{user?.nickname}님😊 안녕하세요!</p>
-          <p>포인트 : {user?.point}p </p>
-        </div>
+        {isLogin ? (
+          <>
+            <p>{user?.nickname}님😊 안녕하세요!</p>
+            <p>포인트 : {user?.point}p </p>
+          </>
+        ) : (
+          <></>
+        )}
       </StBanner>
       <StCategoryListBox>
         {CATEGORIES.map((category, index) => {
@@ -125,8 +131,16 @@ const Shop = () => {
           <StItemCategory>{buyItem?.category}</StItemCategory>
           <StItemTitle>{buyItem?.name}</StItemTitle>
           <StModalItemPoint>{buyItem?.point}p</StModalItemPoint>
-          <p>잔액포인트 : {user?.point}p </p>
-          <StModalButton onClick={clickedBuyButton}>나에게 선물하기</StModalButton>
+          {isLogin ? (
+            <>
+              <p>잔액포인트 : {user?.point}p </p>
+              <StModalButton onClick={clickedBuyButton}>나에게 선물하기</StModalButton>
+            </>
+          ) : (
+            <>
+              <StModalButton onClick={() => navigate('/login')}>로그인 하러가기</StModalButton>
+            </>
+          )}
         </StModalInnerBox>
       </Modal>
     </StItemContainer>
