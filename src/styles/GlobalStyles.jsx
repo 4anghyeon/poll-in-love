@@ -1,4 +1,5 @@
 import {createGlobalStyle} from 'styled-components';
+import theme from './theme';
 
 export const GlobalStyle = createGlobalStyle`
   /* http://meyerweb.com/eric/tools/css/reset/
@@ -118,4 +119,8 @@ export const GlobalStyle = createGlobalStyle`
     transform: translate3d(-50%, -50%, 0);
     will-change: transform;
   }
+  .react-datepicker__day--selected {
+      background: ${theme.COLOR.pink};
+  }
+  
 `;

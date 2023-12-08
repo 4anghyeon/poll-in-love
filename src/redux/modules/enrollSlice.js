@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {v4 as uuidv4} from 'uuid';
+import moment from 'moment/moment';
 
 export const TYPE = {
   INPUT: 'input',
@@ -31,6 +32,7 @@ const initialState = {
   createDate: null,
   thumbnail: null,
   questions: [Poll()],
+  dueDate: moment().add(3, 'day').toDate(),
 };
 
 const enrollSlice = createSlice({

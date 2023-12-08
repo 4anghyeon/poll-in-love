@@ -16,3 +16,7 @@ export const GENDER_OPTIONS = [
   {value: 'male', text: '남성'},
   {value: 'female', text: '여성'},
 ];
+
+export const DEFAULT_TIME_FORMAT = 'yyyy년 MM월 DD일';
+export const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
+export const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
