@@ -126,7 +126,7 @@ const SignUpPage = () => {
           value={email}
           required
         />
-        <div style={{color: 'red'}}>{emailError}</div>
+        <span style={{color: 'red'}}>{emailError}</span>
         <label htmlFor="password">비밀번호</label>
         <input
           placeholder="비밀번호를 입력하세요."
@@ -175,15 +175,14 @@ const StContainer = styled.div`
   ${ColumnCenter};
   width: 100%;
   padding: 20px 0 20px 0;
-  //padding: 20px 0 20px 0;
-  justify-content: flex-start;
   background-color: whitesmoke;
+  height: 100vh;
 `;
 
 const StForm = styled.form`
   width: 30%;
   ${ColumnCenter};
-  gap: 15px;
+  gap: 12px;
   label {
     width: 95%;
   }
@@ -193,8 +192,8 @@ const StForm = styled.form`
   input,
   select {
     width: 100%;
-    padding: 20px;
-    height: 60px;
+    padding: 10px;
+    height: 45px;
     font-size: 1.1rem;
     border-radius: 10px;
     border: 1px solid lightgrey;
