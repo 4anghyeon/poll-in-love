@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import {DEFAULT_IMAGE, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
+import {AGE_OPTIONS, DEFAULT_IMAGE, DEFAULT_TIME_FORMAT, GENDER_OPTIONS} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
 import {getPollsWithNotExpired} from 'api/polls';
 import {useQuery} from '@tanstack/react-query';
@@ -10,6 +10,7 @@ import {BarLoader} from 'react-spinners';
 import {getItems} from 'api/items';
 import moment from 'moment/moment';
 import {FaRegCalendarAlt} from 'react-icons/fa';
+import Select from 'react-select';
 
 const Home = () => {
   const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPollsWithNotExpired});
@@ -18,6 +19,18 @@ const Home = () => {
   const [hotItems, setHotItems] = useState([]);
   const [allPolls, setAllPolls] = useState([]);
   const [randomPolls, setRandomPolls] = useState([]);
+  const [selectedAges, setSelectedAges] = useState([]);
+  const [selectedGenders, setSelectedGenders] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearch = () => {
+    if (searchKeyword === '') {
+      setAllPolls(pollsData);
+    } else {
+      const filteredAllPolls = allPolls.filter(poll => poll.title.includes(searchKeyword));
+      setAllPolls(filteredAllPolls);
+    }
+  };
 
   useEffect(() => {
     if (pollsData) {
@@ -32,10 +45,20 @@ const Home = () => {
   }, [itemsData]);
 
   useEffect(() => {
-    if (pollsData) {
-      setAllPolls(pollsData.sort((a, b) => a.dueDate?.seconds - b.dueDate?.seconds));
+    if (!pollsData) return;
+
+    let filteredPolls = pollsData;
+    const ages = selectedAges.map(age => age.value);
+    const genders = selectedGenders.map(gender => gender.value);
+
+    if (selectedAges.length > 0) {
+      filteredPolls = filteredPolls.filter(poll => ages.includes(poll.age));
     }
-  }, [pollsData]);
+    if (selectedGenders.length > 0) {
+      filteredPolls = filteredPolls.filter(poll => genders.includes(poll.gender));
+    }
+    setAllPolls(filteredPolls);
+  }, [pollsData, selectedAges, selectedGenders]);
 
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
@@ -76,8 +99,42 @@ const Home = () => {
             </Link>
           ))}
         </StShopBox>
-        {/* 검색어 구현 예정 */}
-        {allPolls.map((poll, index) => (
+        <StSearchBarBox>
+          <StyledSelect
+            options={AGE_OPTIONS.map(option => ({
+              value: option.value,
+              label: option.text,
+            }))}
+            isMulti
+            value={selectedAges}
+            onChange={setSelectedAges}
+            placeholder="나이를 선택하세요"
+          />
+          <StyledSelect
+            options={GENDER_OPTIONS.map(option => ({
+              value: option.value,
+              label: option.text,
+              color: option.color,
+            }))}
+            isMulti
+            value={selectedGenders}
+            onChange={setSelectedGenders}
+            placeholder="성별을 선택하세요"
+          />
+          <StSearchBar>
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요"
+              value={searchKeyword}
+              onChange={e => setSearchKeyword(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleSearch();
+              }}
+            />
+            <button onClick={handleSearch}>검색</button>
+          </StSearchBar>
+        </StSearchBarBox>
+        {allPolls?.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
@@ -341,4 +398,31 @@ const StDueDate = styled.div`
   & svg {
     margin-right: 5px;
   }
+`;
+const StSearchBar = styled.div`
+  ${RowCenter};
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+`;
+
+const StSearchBarBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+const StyledSelect = styled(Select)`
+  width: 400px;
+  margin: 10px;
+  border-radius: 10px;
+  color: black;
+  font-weight: bold;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.5;
+  background-color: white;
+  cursor: pointer;
 `;
