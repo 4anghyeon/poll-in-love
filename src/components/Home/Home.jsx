@@ -13,7 +13,11 @@ import {FaRegCalendarAlt} from 'react-icons/fa';
 import Select from 'react-select';
 
 const Home = () => {
-  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPollsWithNotExpired});
+  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({
+    queryKey: ['polls'],
+    queryFn: getPollsWithNotExpired,
+    select: polls => polls.sort((a, b) => a.dueDate.seconds - b.dueDate.seconds),
+  });
   const {isLoading: isLoadingItems, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
 
   const [hotItems, setHotItems] = useState([]);
@@ -27,7 +31,7 @@ const Home = () => {
     if (searchKeyword === '') {
       setAllPolls(pollsData);
     } else {
-      const filteredAllPolls = allPolls.filter(poll => poll.title.includes(searchKeyword));
+      const filteredAllPolls = pollsData.filter(poll => poll.title.includes(searchKeyword));
       setAllPolls(filteredAllPolls);
     }
   };
