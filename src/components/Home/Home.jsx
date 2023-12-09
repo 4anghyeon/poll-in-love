@@ -401,9 +401,32 @@ const StDueDate = styled.div`
 `;
 const StSearchBar = styled.div`
   ${RowCenter};
-  width: 100%;
   margin-top: 50px;
   margin-bottom: 50px;
+
+  input {
+    width: 330px;
+    height: 40px;
+    border: 1px solid #bdbdbd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-right: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border: 2px solid ${theme.COLOR.pink};
+  }
+
+  button {
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
 `;
 
 const StSearchBarBox = styled.div`
@@ -412,6 +435,7 @@ const StSearchBarBox = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 900px;
 `;
 
 const StyledSelect = styled(Select)`
@@ -425,4 +449,21 @@ const StyledSelect = styled(Select)`
   line-height: 1.5;
   background-color: white;
   cursor: pointer;
+
+  .css-13cymwt-control {
+    border: 2px solid ${theme.COLOR.pink};
+    border-radius: 10px;
+  }
+
+  .css-wsp0cs-MultiValueGeneric {
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    border-radius: 0;
+  }
+
+  .css-12a83d4-MultiValueRemove {
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    border-radius: 0;
+  }
 `;
