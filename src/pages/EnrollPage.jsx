@@ -14,7 +14,6 @@ import {useNavigate} from 'react-router-dom';
 import TOAST_OPTION from '../utils/toast-option';
 import {BeatLoader} from 'react-spinners';
 import {auth} from '../shared/firebase/firebase';
-import {onAuthStateChanged} from 'firebase/auth';
 import {getUserByEmail} from '../api/users';
 
 const SUBMIT = 'submit';
@@ -130,12 +129,6 @@ const EnrollPage = () => {
   }, [isAddSuccess, isUploadSuccess]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, user => {
-      if (!user) {
-        toast.error('로그인 후 이용해 주세요', TOAST_OPTION.topCenter);
-        navigate('/login', {replace: true});
-      }
-    });
     // 등록 페이지로 들어오면 Form 전부 초기화
     dispatch(init());
   }, []);
