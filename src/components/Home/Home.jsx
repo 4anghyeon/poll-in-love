@@ -433,6 +433,34 @@ const StSearchBar = styled.div`
     font-weight: bold;
     cursor: pointer;
   }
+  @media (max-width: 1000px) {
+    input {
+      width: 250px;
+    }
+    button {
+      width: 50px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    input {
+      width: 150px;
+    }
+    button {
+      width: 50px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    margin-top: 12px;
+    input {
+      width: 200px;
+      margin: 0 auto;
+    }
+    button {
+     display: none;
+    }
+  }
 `;
 
 const StSearchBarBox = styled.div`
@@ -442,6 +470,24 @@ const StSearchBarBox = styled.div`
   align-items: center;
   text-align: center;
   width: 900px;
+
+  @media (max-width: 1000px) {
+    width: 700px;
+  }
+
+  @media (max-width: 768px) {
+    width: 600px;
+  }
+
+  @media (max-width: 600px) {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
 `;
 
 const StyledSelect = styled(Select)`
@@ -471,6 +517,14 @@ const StyledSelect = styled(Select)`
     background-color: ${theme.COLOR.pink};
     color: white;
     border-radius: 0;
+  }
+
+  @media (max-width: 768px) {
+    width: 280px;
+  }
+
+  @media (max-width: 600px) {
+    width: 200px;
   }
 `;
 

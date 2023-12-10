@@ -107,10 +107,16 @@ const StDiv = styled.div`
   & span {
     color: white;
     font-size: ${theme.FONT_SIZE.lg};
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+
   }
   display: flex;
   align-items: center;
   gap: 20px;
+
 `;
 
 const StList = styled.ul`
