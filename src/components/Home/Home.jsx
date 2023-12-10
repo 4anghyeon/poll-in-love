@@ -148,6 +148,7 @@ const Home = () => {
               </StSurveyTitleWrapper>
               <StSurveyBottom>
                 <p>질문 개수 {poll.questions.length}개</p>
+                <p>{poll.age === 0 ? '상관없음' : `연령대 ${poll.age}대`}</p>
                 <p>
                   <FaRegCalendarAlt />
                   마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
