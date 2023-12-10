@@ -3,7 +3,6 @@ import {auth} from 'shared/firebase/firebase';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getUserByEmail, updateUser} from 'api/users';
 import {Link} from 'react-router-dom';
-
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from 'styles/CommonStyles';
@@ -65,7 +64,6 @@ const MyPage = () => {
     },
   });
 
-  console.log('boughtItems', boughtItems);
   const onClickResultDownload = async pollId => {
     downloadExcel(pollId);
   };
@@ -74,9 +72,7 @@ const MyPage = () => {
     mutateToUpdateUser(modifiedNickname, modifiedAge, modifiedGender);
     setIsEditing(false);
   };
-  console.log(modifiedNickname, modifiedGender, modifiedAge);
-  console.log('bougtItems', boughtItems);
-  console.log(user);
+
   return (
     <StContainer>
       <StProfile>
@@ -86,20 +82,16 @@ const MyPage = () => {
             <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-
               <span>닉네임</span>
               <input type="text" defaultValue={user?.nickname} onChange={e => setModifiedNickname(e.target.value)} />
-
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-
               <span>성별</span>
               <Select
                 options={GENDER_OPTIONS}
                 onChangeSelect={e => setModifiedGender(e.target.value)}
                 value={user?.gender}
               />
-
               <span>연령대</span>
               <Select
                 id="age"
@@ -120,16 +112,12 @@ const MyPage = () => {
             <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-
               <span>닉네임</span>
               <p>{user?.nickname}</p>
-
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-
               <span>성별</span>
               <p>{user?.gender === 'male' ? '남성' : '여성'}</p>
-
               <span>연령대</span>
               <p>{user?.age}대</p>
             </StContent>
@@ -171,7 +159,7 @@ const MyPage = () => {
               <StMyPollContainer key={index}>
                 <Link to={`/poll/${poll.id}`}>
                   <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                  <div> {poll.writer}</div>
+                  <div> {poll.nickname}</div>
                   <div>{poll.title}</div>
                   <div>{poll.point}p</div>
                 </Link>
@@ -261,9 +249,9 @@ const StMyPollContainer = styled.div`
   text-align: center;
   & div {
     width: 250px;
-    white-space: nowrap; /* 텍스트가 한 줄로만 표시되도록 설정 */
-    overflow: hidden; /* 넘치는 내용을 숨김 */
-    text-overflow: ellipsis; /* 생략 부분에 "..." 추가 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
