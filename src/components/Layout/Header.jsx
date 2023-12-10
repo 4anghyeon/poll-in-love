@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import logo from '../../assets/images/logoImge.png';
 import {RxAvatar, RxHamburgerMenu} from 'react-icons/rx';
 import {BsShop} from 'react-icons/bs';
-import {Link, NavLink, useNavigate} from 'react-router-dom';
+import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import theme from 'styles/theme';
 import {auth} from 'shared/firebase/firebase';
-import {onAuthStateChanged, signOut} from 'firebase/auth';
+import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth';
 import {Button, RowCenter} from 'styles/CommonStyles';
 import {useQuery} from '@tanstack/react-query';
 import {getUserByEmail} from 'api/users';
@@ -17,12 +17,21 @@ import TOAST_OPTION from '../../utils/toast-option';
 
 const Header = () => {
   const navigate = useNavigate();
+  const {pathname} = useLocation();
   const [currentUser, setCurrentUser] = useState(null);
   const [isListVisible, setIsListVisible] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       setCurrentUser(user);
+
+      if (pathname === '/enroll' || pathname === '/poll') {
+        if (!user) {
+          console.log(getAuth().currentUser);
+          toast.error('로그인 후 이용해 주세요', TOAST_OPTION.topCenter);
+          navigate('/login', {replace: true});
+        }
+      }
     });
     document.addEventListener('click', () => setIsListVisible(false));
   }, []);
@@ -114,12 +123,10 @@ const StDiv = styled.div`
     @media (max-width: 768px) {
       display: none;
     }
-
   }
   display: flex;
   align-items: center;
   gap: 20px;
-
 `;
 
 const StList = styled.ul`
