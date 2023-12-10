@@ -44,16 +44,14 @@ const LoginPage = () => {
   const onClickLoginButton = async e => {
     e.preventDefault();
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('user with signIn', userCredential.user);
+      await signInWithEmailAndPassword(auth, email, password);
       toast.success(`환영합니다!`, {
         ...TOAST_OPTION.topRight,
         icon: '🎉',
       });
       navigate('/');
     } catch (error) {
-      console.log(error);
-      console.log(error.code);
+      console.error(error);
       if (error.code === 'auth/invalid-credential') toast.error('비밀번호 또는 이메일이 일치하지 않습니다.');
     }
   };

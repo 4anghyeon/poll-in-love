@@ -3,10 +3,9 @@ import {auth} from 'shared/firebase/firebase';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getUserByEmail, updateUser} from 'api/users';
 import {Link} from 'react-router-dom';
-
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
-import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
@@ -65,7 +64,6 @@ const MyPage = () => {
     },
   });
 
-  console.log('boughtItems', boughtItems);
   const onClickResultDownload = async pollId => {
     downloadExcel(pollId);
   };
@@ -74,8 +72,7 @@ const MyPage = () => {
     mutateToUpdateUser(modifiedNickname, modifiedAge, modifiedGender);
     setIsEditing(false);
   };
-  console.log(modifiedNickname, modifiedGender, modifiedAge);
-  console.log('bougtItems', boughtItems);
+
   return (
     <StContainer>
       <StProfile>
@@ -85,24 +82,20 @@ const MyPage = () => {
             <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-
               <span>닉네임</span>
               <input type="text" defaultValue={user?.nickname} onChange={e => setModifiedNickname(e.target.value)} />
-
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-
               <span>성별</span>
               <Select
-                options={GENDER_OPTIONS}
+                options={GENDER_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedGender(e.target.value)}
                 value={user?.gender}
               />
-
               <span>연령대</span>
               <Select
                 id="age"
-                options={AGE_OPTIONS}
+                options={AGE_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedAge(e.target.value)}
                 value={user?.age}
               />
@@ -119,16 +112,12 @@ const MyPage = () => {
             <StContent>
               <span>이메일</span>
               <p>{user?.email}</p>
-
               <span>닉네임</span>
               <p>{user?.nickname}</p>
-
               <span>보유 포인트</span>
               <p>{user?.point}p</p>
-
               <span>성별</span>
               <p>{user?.gender === 'male' ? '남성' : '여성'}</p>
-
               <span>연령대</span>
               <p>{user?.age}대</p>
             </StContent>
@@ -163,14 +152,14 @@ const MyPage = () => {
       <StPollsContainer>
         <StTitle>참여한 설문</StTitle>
         <StWrapper>
-          {submitPolls?.length === 0 ? (
+          {submitPolls === undefined ? (
             <div>아직 참여한 설문이 없어요!</div>
           ) : (
             submitPolls?.map((poll, index) => (
               <StMyPollContainer key={index}>
                 <Link to={`/poll/${poll.id}`}>
                   <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                  <div> {poll.writer}</div>
+                  <div> {poll.nickname}</div>
                   <div>{poll.title}</div>
                   <div>{poll.point}p</div>
                 </Link>
@@ -258,6 +247,12 @@ const StMyPollContainer = styled.div`
   ${ColumnCenter}
   gap: 15px;
   text-align: center;
+  & div {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const StTitle = styled.div`

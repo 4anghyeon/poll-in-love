@@ -25,7 +25,6 @@ export const getItmesByTargetIds = async targetItemIds => {
     };
     initialItems.push(data);
   });
-  console.log('initialItems', initialItems);
   return initialItems;
 };
 

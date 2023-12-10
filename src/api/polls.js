@@ -69,6 +69,5 @@ export const getPollByTargetIds = async targetPollIds => {
     };
     initialPolls.push(data);
   });
-  console.log('initialPolls', initialPolls);
   return initialPolls;
 };

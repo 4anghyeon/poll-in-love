@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, DEFAULT_TIME_FORMAT, GENDER_OPTIONS} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
@@ -38,13 +38,13 @@ const Home = () => {
 
   useEffect(() => {
     if (pollsData) {
-      setRandomPolls(pollsData.sort(() => Math.random() - Math.random()).slice(0, 4));
+      setRandomPolls([...pollsData].sort(() => Math.random() - Math.random()).slice(0, 4));
     }
   }, [pollsData]);
 
   useEffect(() => {
     if (itemsData) {
-      setHotItems(itemsData.sort((a, b) => b.sales - a.sales).slice(0, 5));
+      setHotItems([...itemsData].sort((a, b) => b.sales - a.sales).slice(0, 5));
     }
   }, [itemsData]);
 
@@ -65,13 +65,13 @@ const Home = () => {
   }, [pollsData, selectedAges, selectedGenders]);
 
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
+
   return (
     <>
       <StMainBox>
         <StTitleBox>
           <h1>오늘의 발견💡</h1>
         </StTitleBox>
-
         <StPickBox>
           {randomPolls.map((poll, index) => (
             <Link to={`/poll/${poll.id}`} key={index}>
@@ -107,7 +107,7 @@ const Home = () => {
         </StShopBox>
         <StSearchBarBox>
           <StyledSelect
-            options={AGE_OPTIONS.map(option => ({
+            options={AGE_OPTIONS.slice(1).map(option => ({
               value: option.value,
               label: option.text,
             }))}
@@ -117,7 +117,7 @@ const Home = () => {
             placeholder="나이를 선택하세요"
           />
           <StyledSelect
-            options={GENDER_OPTIONS.map(option => ({
+            options={GENDER_OPTIONS.slice(1).map(option => ({
               value: option.value,
               label: option.text,
               color: option.color,
@@ -148,6 +148,8 @@ const Home = () => {
               </StSurveyTitleWrapper>
               <StSurveyBottom>
                 <p>질문 개수 {poll.questions.length}개</p>
+                <p>{poll.age === 0 ? '연령대 상관없음' : `연령대 ${poll.age}대`}</p>
+                <p>{poll.gender === 'none' ? '성별 상관없음' : `성별 ${poll.gender === 'male' ? '남성' : '여성'} `}</p>
                 <p>
                   <FaRegCalendarAlt />
                   마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
@@ -157,6 +159,9 @@ const Home = () => {
             </StSurveyCard>
           </Link>
         ))}
+        <StButtonBox>
+          <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
+        </StButtonBox>
       </StMainBox>
     </>
   );
@@ -458,7 +463,7 @@ const StSearchBar = styled.div`
       margin: 0 auto;
     }
     button {
-     display: none;
+      display: none;
     }
   }
 `;
@@ -487,7 +492,6 @@ const StSearchBarBox = styled.div`
     justify-content: center;
     text-align: center;
   }
-
 `;
 
 const StyledSelect = styled(Select)`
@@ -540,4 +544,16 @@ const StBestBox = styled.div`
   background-color: ${theme.COLOR.pink};
   padding: 7px;
   border-radius: 100px;
+`;
+
+const StButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 50px;
+  width: 100%;
+  height: 100%;
+  position: sticky;
+  bottom: 20px;
+  margin-left: 120px;
 `;
