@@ -77,6 +77,11 @@ const PollPage = () => {
   }, [isSuccess]);
 
   useEffect(() => {
+    if (user.gender === 'null' || user.age === null) {
+      toast.warn('마이페이지에서 성별과 연령대를 설정 후 이용해 주세요', TOAST_OPTION.topCenter);
+      navigate(`/mypage/${user.id}`);
+      return;
+    }
     if (user?.email === poll.writer) setIsMe(true);
     if (isGetUserSuccess) {
       // 설문의 성별 조건이 상관 없음이 아니고, 나의 성별과 맞지 않으면 튕겨냄

@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
-import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
@@ -76,6 +76,7 @@ const MyPage = () => {
   };
   console.log(modifiedNickname, modifiedGender, modifiedAge);
   console.log('bougtItems', boughtItems);
+  console.log(user);
   return (
     <StContainer>
       <StProfile>
