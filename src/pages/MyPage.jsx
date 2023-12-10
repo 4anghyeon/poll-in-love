@@ -137,6 +137,7 @@ const MyPage = () => {
               <StMyPollContainer key={poll.id}>
                 <Link to={`/poll/${poll.id}`}>
                   <img src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
+                  <img src={DEFAULT_IMAGE} alt="설문 썸네일" />
                   <div>{poll.title}</div>
                 </Link>
                 {isDownloadFending ? (
