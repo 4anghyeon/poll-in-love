@@ -72,7 +72,7 @@ const MyPage = () => {
     mutateToUpdateUser(modifiedNickname, modifiedAge, modifiedGender);
     setIsEditing(false);
   };
-  console.log(submitPolls);
+
   return (
     <StContainer>
       <StProfile>
