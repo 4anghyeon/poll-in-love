@@ -210,6 +210,9 @@ const StBanner = styled.div`
       margin-left: 50px;
     }
     p {
+    display: none;
+    }
+    h2 {
       font-size: 15px;
       margin-left: 50px;
     }
