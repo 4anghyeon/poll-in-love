@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import {DEFAULT_IMAGE, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
+import {AGE_OPTIONS, DEFAULT_IMAGE, DEFAULT_TIME_FORMAT, GENDER_OPTIONS} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
 import {getPollsWithNotExpired} from 'api/polls';
 import {useQuery} from '@tanstack/react-query';
@@ -10,14 +10,31 @@ import {BarLoader} from 'react-spinners';
 import {getItems} from 'api/items';
 import moment from 'moment/moment';
 import {FaRegCalendarAlt} from 'react-icons/fa';
+import Select from 'react-select';
 
 const Home = () => {
-  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({queryKey: ['polls'], queryFn: getPollsWithNotExpired});
+  const {isLoading: isLoadingPolls, data: pollsData} = useQuery({
+    queryKey: ['polls'],
+    queryFn: getPollsWithNotExpired,
+    select: polls => polls.sort((a, b) => a.dueDate.seconds - b.dueDate.seconds),
+  });
   const {isLoading: isLoadingItems, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
 
   const [hotItems, setHotItems] = useState([]);
   const [allPolls, setAllPolls] = useState([]);
   const [randomPolls, setRandomPolls] = useState([]);
+  const [selectedAges, setSelectedAges] = useState([]);
+  const [selectedGenders, setSelectedGenders] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearch = () => {
+    if (searchKeyword === '') {
+      setAllPolls(pollsData);
+    } else {
+      const filteredAllPolls = pollsData.filter(poll => poll.title.includes(searchKeyword));
+      setAllPolls(filteredAllPolls);
+    }
+  };
 
   useEffect(() => {
     if (pollsData) {
@@ -32,17 +49,27 @@ const Home = () => {
   }, [itemsData]);
 
   useEffect(() => {
-    if (pollsData) {
-      setAllPolls(pollsData.sort((a, b) => a.dueDate?.seconds - b.dueDate?.seconds));
+    if (!pollsData) return;
+
+    let filteredPolls = pollsData;
+    const ages = selectedAges.map(age => age.value);
+    const genders = selectedGenders.map(gender => gender.value);
+
+    if (selectedAges.length > 0) {
+      filteredPolls = filteredPolls.filter(poll => ages.includes(poll.age));
     }
-  }, [pollsData]);
+    if (selectedGenders.length > 0) {
+      filteredPolls = filteredPolls.filter(poll => genders.includes(poll.gender));
+    }
+    setAllPolls(filteredPolls);
+  }, [pollsData, selectedAges, selectedGenders]);
 
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
   return (
     <>
       <StMainBox>
         <StTitleBox>
-          <h1>오늘의 PICK</h1>
+          <h1>오늘의 발견💡</h1>
         </StTitleBox>
 
         <StPickBox>
@@ -62,13 +89,15 @@ const Home = () => {
           ))}
         </StPickBox>
         <StTitleBox>
-          <h1>SHOP RANKING</h1>
+          <h1>인기 상품 🎁</h1>
         </StTitleBox>
-        {/*메달달기 */}
         <StShopBox>
           {hotItems.map((item, index) => (
             <Link to="/shop" key={index}>
               <StShopCard>
+                <StBestBox>
+                  <span>{index + 1}위</span>
+                </StBestBox>
                 <StShopImg src={item.imageUrl} />
                 <StShopTitle>{item.name}</StShopTitle>
                 <StShopPrice>{item.point}p</StShopPrice>
@@ -76,8 +105,42 @@ const Home = () => {
             </Link>
           ))}
         </StShopBox>
-        {/* 검색어 구현 예정 */}
-        {allPolls.map((poll, index) => (
+        <StSearchBarBox>
+          <StyledSelect
+            options={AGE_OPTIONS.map(option => ({
+              value: option.value,
+              label: option.text,
+            }))}
+            isMulti
+            value={selectedAges}
+            onChange={setSelectedAges}
+            placeholder="나이를 선택하세요"
+          />
+          <StyledSelect
+            options={GENDER_OPTIONS.map(option => ({
+              value: option.value,
+              label: option.text,
+              color: option.color,
+            }))}
+            isMulti
+            value={selectedGenders}
+            onChange={setSelectedGenders}
+            placeholder="성별을 선택하세요"
+          />
+          <StSearchBar>
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요"
+              value={searchKeyword}
+              onChange={e => setSearchKeyword(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') handleSearch();
+              }}
+            />
+            <button onClick={handleSearch}>검색</button>
+          </StSearchBar>
+        </StSearchBarBox>
+        {allPolls?.map((poll, index) => (
           <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
             <StSurveyCard>
               <StSurveyTitleWrapper>
@@ -224,8 +287,8 @@ const StShopBox = styled.div`
 const StShopCard = styled.div`
   ${() => ColumnCenter}
   width: 230px;
-  border-radius: 200px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 10px;
   margin: 20px 20px 50px 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${theme.COLOR.purple};
@@ -341,4 +404,86 @@ const StDueDate = styled.div`
   & svg {
     margin-right: 5px;
   }
+`;
+const StSearchBar = styled.div`
+  ${RowCenter};
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  input {
+    width: 330px;
+    height: 40px;
+    border: 1px solid #bdbdbd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-right: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border: 2px solid ${theme.COLOR.pink};
+  }
+
+  button {
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+`;
+
+const StSearchBarBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 900px;
+`;
+
+const StyledSelect = styled(Select)`
+  width: 400px;
+  margin: 10px;
+  border-radius: 10px;
+  color: black;
+  font-weight: bold;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.5;
+  background-color: white;
+  cursor: pointer;
+
+  .css-13cymwt-control {
+    border: 2px solid ${theme.COLOR.pink};
+    border-radius: 10px;
+  }
+
+  .css-wsp0cs-MultiValueGeneric {
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    border-radius: 0;
+  }
+
+  .css-12a83d4-MultiValueRemove {
+    background-color: ${theme.COLOR.pink};
+    color: white;
+    border-radius: 0;
+  }
+`;
+
+const StBestBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  background-color: ${theme.COLOR.pink};
+  padding: 7px;
+  border-radius: 100px;
 `;
