@@ -38,13 +38,13 @@ const Home = () => {
 
   useEffect(() => {
     if (pollsData) {
-      setRandomPolls(pollsData.sort(() => Math.random() - Math.random()).slice(0, 4));
+      setRandomPolls([...pollsData].sort(() => Math.random() - Math.random()).slice(0, 4));
     }
   }, [pollsData]);
 
   useEffect(() => {
     if (itemsData) {
-      setHotItems(itemsData.sort((a, b) => b.sales - a.sales).slice(0, 5));
+      setHotItems([...itemsData].sort((a, b) => b.sales - a.sales).slice(0, 5));
     }
   }, [itemsData]);
 
