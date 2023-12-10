@@ -180,7 +180,6 @@ const StMainBox = styled.div`
 
 const StTitleBox = styled.div`
   ${() => RowCenter}
-  background-image: src {};
 
   h1 {
     font-size: 35px;
