@@ -123,7 +123,7 @@ const PollPage = () => {
           </StModalContent>
         </Modal>
       )}
-      <StPollContainer $isSurveyed={isSurveyed}>
+      <StPollContainer $isSurveyed={isSurveyed} $isMe={isMe}>
         <StPollHeader>
           <div>
             <h1>
@@ -196,7 +196,7 @@ const StPollContainer = styled.div`
   position: relative;
   padding: 0 25% 0 25%;
   margin-bottom: 20px;
-  filter: blur(${({$isSurveyed}) => ($isSurveyed ? '2px' : 0)});
+  filter: blur(${({$isSurveyed, $isMe}) => ($isSurveyed && !$isMe ? '2px' : 0)});
 
   @media screen and (max-width: 768px) {
     & {
