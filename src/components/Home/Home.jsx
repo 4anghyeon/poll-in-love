@@ -69,7 +69,7 @@ const Home = () => {
     <>
       <StMainBox>
         <StTitleBox>
-          <h1>오늘의 PICK..☆</h1>
+          <h1>오늘의 발견💡</h1>
         </StTitleBox>
 
         <StPickBox>
@@ -89,7 +89,7 @@ const Home = () => {
           ))}
         </StPickBox>
         <StTitleBox>
-          <h1>인기 상품🎁</h1>
+          <h1>인기 상품 🎁</h1>
         </StTitleBox>
         <StShopBox>
           {hotItems.map((item, index) => (
@@ -180,6 +180,7 @@ const StMainBox = styled.div`
 
 const StTitleBox = styled.div`
   ${() => RowCenter}
+  background-image: src {};
 
   h1 {
     font-size: 35px;
