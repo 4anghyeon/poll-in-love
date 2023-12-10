@@ -20,6 +20,11 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
+        path: '*',
+        index: true,
+        element: <HomePage />,
+      },
+      {
         // 마이페이지
         path: 'mypage/:id',
         element: <MyPage />,

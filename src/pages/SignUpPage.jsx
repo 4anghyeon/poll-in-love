@@ -158,9 +158,9 @@ const SignUpPage = () => {
         />
         <span style={{color: 'red'}}>{nicknameError}</span>
         <label htmlFor="age">연령대</label>
-        <Select id="age" options={AGE_OPTIONS} onChangeSelect={e => setAge(e.target.value)} />
+        <Select id="age" options={AGE_OPTIONS.slice(1)} onChangeSelect={e => setAge(e.target.value)} />
         <label htmlFor="gender">성별</label>
-        <Select id="gender" options={GENDER_OPTIONS} onChangeSelect={e => setGender(e.target.value)} />
+        <Select id="gender" options={GENDER_OPTIONS.slice(1)} onChangeSelect={e => setGender(e.target.value)} />
         <StButtons>
           <StButton type="submit" disabled={!email || !password || !confirmPassword || !nickname || !age || !gender}>
             회원가입

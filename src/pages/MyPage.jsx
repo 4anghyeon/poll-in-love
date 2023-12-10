@@ -5,7 +5,7 @@ import {getUserByEmail, updateUser} from 'api/users';
 import {Link} from 'react-router-dom';
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
-import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
@@ -88,14 +88,14 @@ const MyPage = () => {
               <p>{user?.point}p</p>
               <span>성별</span>
               <Select
-                options={GENDER_OPTIONS}
+                options={GENDER_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedGender(e.target.value)}
                 value={user?.gender}
               />
               <span>연령대</span>
               <Select
                 id="age"
-                options={AGE_OPTIONS}
+                options={AGE_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedAge(e.target.value)}
                 value={user?.age}
               />

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, DEFAULT_TIME_FORMAT, GENDER_OPTIONS} from 'utils/defaultValue';
 import {Link} from 'react-router-dom';
@@ -159,6 +159,9 @@ const Home = () => {
             </StSurveyCard>
           </Link>
         ))}
+        <StButtonBox>
+         <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
+        </StButtonBox>
       </StMainBox>
     </>
   );
@@ -542,4 +545,16 @@ const StBestBox = styled.div`
   background-color: ${theme.COLOR.pink};
   padding: 7px;
   border-radius: 100px;
+`;
+
+const StButtonBox = styled.div`
+display: flex;
+flex-direction: row;
+justify-content: flex-end;
+margin-bottom: 50px;
+width: 100%;
+height: 100%;
+position: sticky;
+bottom: 20px;
+margin-left: 120px;
 `;
