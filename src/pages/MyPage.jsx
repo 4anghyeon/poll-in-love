@@ -5,7 +5,7 @@ import {getUserByEmail, updateUser} from 'api/users';
 import {Link} from 'react-router-dom';
 import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
-import {Button, ColumnCenter, RowCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
