@@ -71,7 +71,6 @@ const Home = () => {
         <StTitleBox>
           <h1>오늘의 발견💡</h1>
         </StTitleBox>
-
         <StPickBox>
           {randomPolls.map((poll, index) => (
             <Link to={`/poll/${poll.id}`} key={index}>
@@ -107,7 +106,7 @@ const Home = () => {
         </StShopBox>
         <StSearchBarBox>
           <StyledSelect
-            options={AGE_OPTIONS.map(option => ({
+            options={AGE_OPTIONS.slice(1).map(option => ({
               value: option.value,
               label: option.text,
             }))}
@@ -117,7 +116,7 @@ const Home = () => {
             placeholder="나이를 선택하세요"
           />
           <StyledSelect
-            options={GENDER_OPTIONS.map(option => ({
+            options={GENDER_OPTIONS.slice(1).map(option => ({
               value: option.value,
               label: option.text,
               color: option.color,
@@ -149,7 +148,7 @@ const Home = () => {
               <StSurveyBottom>
                 <p>질문 개수 {poll.questions.length}개</p>
                 <p>{poll.age === 0 ? '연령대 상관없음' : `연령대 ${poll.age}대`}</p>
-                <p>{poll.gender === 'none' ? '성별 상관없음' : `성별 ${poll.gender === 'male'? '남성' : '여성'} `}</p>
+                <p>{poll.gender === 'none' ? '성별 상관없음' : `성별 ${poll.gender === 'male' ? '남성' : '여성'} `}</p>
                 <p>
                   <FaRegCalendarAlt />
                   마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
@@ -160,7 +159,7 @@ const Home = () => {
           </Link>
         ))}
         <StButtonBox>
-         <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
+          <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
         </StButtonBox>
       </StMainBox>
     </>
@@ -463,7 +462,7 @@ const StSearchBar = styled.div`
       margin: 0 auto;
     }
     button {
-     display: none;
+      display: none;
     }
   }
 `;
@@ -492,7 +491,6 @@ const StSearchBarBox = styled.div`
     justify-content: center;
     text-align: center;
   }
-
 `;
 
 const StyledSelect = styled(Select)`
@@ -548,13 +546,13 @@ const StBestBox = styled.div`
 `;
 
 const StButtonBox = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: flex-end;
-margin-bottom: 50px;
-width: 100%;
-height: 100%;
-position: sticky;
-bottom: 20px;
-margin-left: 120px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 50px;
+  width: 100%;
+  height: 100%;
+  position: sticky;
+  bottom: 20px;
+  margin-left: 120px;
 `;
