@@ -6,7 +6,7 @@ import {BsShop} from 'react-icons/bs';
 import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import theme from 'styles/theme';
 import {auth} from 'shared/firebase/firebase';
-import {getAuth, onAuthStateChanged, signOut} from 'firebase/auth';
+import {onAuthStateChanged, signOut} from 'firebase/auth';
 import {Button, RowCenter} from 'styles/CommonStyles';
 import {useQuery} from '@tanstack/react-query';
 import {getUserByEmail} from 'api/users';
