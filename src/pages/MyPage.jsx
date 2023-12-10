@@ -7,7 +7,7 @@ import {getPollByTargetIds, getPolls} from 'api/polls';
 import styled from 'styled-components';
 import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
-import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS, DEFAULT_TIME_FORMAT} from 'utils/defaultValue';
+import {AGE_OPTIONS, DEFAULT_IMAGE, GENDER_OPTIONS} from 'utils/defaultValue';
 import {findParticipantByUserEmail} from 'api/participants';
 import {getItmesByTargetIds} from 'api/items';
 import Select from 'components/Common/Select';
@@ -15,8 +15,7 @@ import {downloadDataAsExcel} from '../utils/helper';
 import {ClipLoader} from 'react-spinners';
 import {toast} from 'react-toastify';
 import TOAST_OPTION from '../utils/toast-option';
-import moment from 'moment/moment';
-import finisiedPoll from '../assets/images/finishedPoll.png';
+import finishedPoll from '../assets/images/finishedPoll.png';
 
 const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -145,7 +144,7 @@ const MyPage = () => {
                     <>
                       <StImgContainer>
                         <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
-                        <StFinishedPollImg src={finisiedPoll} alt="종료된 설문" />
+                        <StFinishedPollImg src={finishedPoll} alt="종료된 설문" />
                       </StImgContainer>
                     </>
                   ) : (
