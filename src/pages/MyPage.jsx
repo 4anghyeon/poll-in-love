@@ -258,6 +258,12 @@ const StMyPollContainer = styled.div`
   ${ColumnCenter}
   gap: 15px;
   text-align: center;
+  & div {
+    width: 250px;
+    white-space: nowrap; /* 텍스트가 한 줄로만 표시되도록 설정 */
+    overflow: hidden; /* 넘치는 내용을 숨김 */
+    text-overflow: ellipsis; /* 생략 부분에 "..." 추가 */
+  }
 `;
 
 const StTitle = styled.div`
