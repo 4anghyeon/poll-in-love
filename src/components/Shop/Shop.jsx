@@ -91,8 +91,7 @@ const Shop = () => {
         </div>
         {isLogin ? (
           <>
-            <p>{user?.nickname}님😊 안녕하세요!</p>
-            <p>포인트 : {user?.point}p </p>
+            <p>잔액 포인트 : {user?.point}p </p>
           </>
         ) : (
           <></>
@@ -172,7 +171,7 @@ const StBanner = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   cursor: pointer;
 
   h1 {
