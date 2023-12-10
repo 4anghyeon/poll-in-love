@@ -88,14 +88,14 @@ const MyPage = () => {
               <p>{user?.point}p</p>
               <span>성별</span>
               <Select
-                options={GENDER_OPTIONS}
+                options={GENDER_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedGender(e.target.value)}
                 value={user?.gender}
               />
               <span>연령대</span>
               <Select
                 id="age"
-                options={AGE_OPTIONS}
+                options={AGE_OPTIONS.slice(1)}
                 onChangeSelect={e => setModifiedAge(e.target.value)}
                 value={user?.age}
               />
