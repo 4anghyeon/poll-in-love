@@ -180,7 +180,7 @@ const MyPage = () => {
 
                   <div> {poll.nickname}</div>
                   <div>{poll.title}</div>
-                  <div>{poll.point}p</div>
+                  <StPoint>{poll.point}p</StPoint>
                 </Link>
               </StMyPollContainer>
             ))
@@ -275,6 +275,7 @@ const StMyPollContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-top: 3px;
   }
 `;
 
@@ -330,4 +331,8 @@ const StImgContainer = styled.div`
   position: relative;
   width: 200px; /* 원하는 이미지 너비로 조절 */
   height: 200px; /* 원하는 이미지 높이로 조절 */
+`;
+
+const StPoint = styled.div`
+  font-size: 16px;
 `;

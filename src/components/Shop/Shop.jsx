@@ -1,15 +1,18 @@
 import {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {ColumnCenter} from 'styles/CommonStyles';
+import {Button, ColumnCenter} from 'styles/CommonStyles';
 import theme from 'styles/theme';
 import {BarLoader} from 'react-spinners';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getItems, incrementSales} from 'api/items';
 import Modal from 'react-modal';
-import {addUserItem, getUserByEmail, updateUserPoint} from 'api/users';
+import {addUserItem, getUserByEmail} from 'api/users';
 import {auth} from 'shared/firebase/firebase';
 import {toast} from 'react-toastify';
 import {useNavigate} from 'react-router-dom';
+import AdModal from './AdModal';
+import useUpdatePoint from '../../hooks/useUpdatePoint';
+import {CiYoutube} from 'react-icons/ci';
 
 const CATEGORIES = ['전체', '편의점', '카페', '치킨', '영화'];
 
@@ -19,20 +22,12 @@ const Shop = () => {
   const {isLoading, data: itemsData} = useQuery({queryKey: ['items'], queryFn: getItems});
   const [buyItem, setBuyItem] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedCategory, setSeletedCategory] = useState(CATEGORIES[0]);
+  const [adModalIsOpen, setAdModalIsOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
   const [selectedItems, setSelectedItems] = useState(itemsData);
   const {data: user, refetch} = useQuery({
     queryKey: ['user'],
     queryFn: () => getUserByEmail(auth.currentUser.email),
-  });
-
-  const {mutate: updatePoint} = useMutation({
-    mutationFn: () => {
-      return updateUserPoint(user.id, -buyItem.point);
-    },
-    onSuccess: () => {
-      addItem();
-    },
   });
 
   const {mutate: addItem} = useMutation({
@@ -43,6 +38,8 @@ const Shop = () => {
       incrementSale(buyItem.id);
     },
   });
+
+  const {updatePoint} = useUpdatePoint(user?.id, -buyItem?.point, addItem);
 
   const {mutate: incrementSale} = useMutation({
     mutationFn: () => {
@@ -82,7 +79,7 @@ const Shop = () => {
     <StItemContainer>
       <StBanner
         onClick={() => {
-          setSeletedCategory(CATEGORIES[0]);
+          setSelectedCategory(CATEGORIES[0]);
         }}
       >
         <div>
@@ -90,9 +87,12 @@ const Shop = () => {
           <h2>포인트를 사용하여 상품을 구매해보세요! 🎉</h2>
         </div>
         {isLogin ? (
-          <>
+          <StPointContainer>
             <p>잔액 포인트 : {user?.point}p </p>
-          </>
+            <StAdButton onClick={() => setAdModalIsOpen(true)}>
+              <CiYoutube /> 광고보고 포인트 얻기
+            </StAdButton>
+          </StPointContainer>
         ) : (
           <></>
         )}
@@ -103,7 +103,7 @@ const Shop = () => {
             <StCategoryList
               key={index}
               onClick={() => {
-                setSeletedCategory(category);
+                setSelectedCategory(category);
               }}
               $isClicked={selectedCategory === category}
             >
@@ -141,6 +141,14 @@ const Shop = () => {
             </>
           )}
         </StModalInnerBox>
+      </Modal>
+      <Modal
+        style={adModalStyle}
+        isOpen={adModalIsOpen}
+        ariaHideApp={false}
+        onRequestClose={() => setAdModalIsOpen(false)}
+      >
+        <AdModal user={user} />
       </Modal>
     </StItemContainer>
   );
@@ -209,7 +217,7 @@ const StBanner = styled.div`
       margin-left: 50px;
     }
     p {
-    display: none;
+      display: none;
     }
     h2 {
       font-size: 15px;
@@ -331,7 +339,7 @@ const modalStyle = {
   },
   content: {
     width: '370px',
-    height: '420px',
+    height: 'fit-content',
     zIndex: '150',
     position: 'absolute',
     top: '50%',
@@ -342,6 +350,15 @@ const modalStyle = {
     backgroundColor: 'white',
     justifyContent: 'center',
     overflow: 'auto',
+  },
+};
+
+const adModalStyle = {
+  ...modalStyle,
+  content: {
+    ...modalStyle.content,
+    width: 'fit-content',
+    height: 'fit-content',
   },
 };
 
@@ -391,4 +408,19 @@ const StModalItemPoint = styled.div`
   color: ${theme.COLOR.pink};
   margin: 15px 0 10px 0;
   cursor: pointer;
+`;
+
+const StPointContainer = styled.div`
+  ${ColumnCenter};
+  align-items: flex-start;
+  p {
+    margin-bottom: 10px;
+  }
+`;
+
+const StAdButton = styled(Button)`
+  svg {
+    margin-right: 5px;
+  }
+  margin-left: 10px;
 `;
