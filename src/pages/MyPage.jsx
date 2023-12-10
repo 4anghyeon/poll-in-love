@@ -15,12 +15,16 @@ import {downloadDataAsExcel} from '../utils/helper';
 import {ClipLoader} from 'react-spinners';
 import {toast} from 'react-toastify';
 import TOAST_OPTION from '../utils/toast-option';
+import finishedPoll from '../assets/images/finishedPoll.png';
 
 const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [modifiedNickname, setModifiedNickname] = useState(null);
   const [modifiedGender, setModifiedGender] = useState(null);
   const [modifiedAge, setModifiedAge] = useState(null);
+  const currentDateMilliseconds = new Date().getTime();
+  const currentDateSeconds = Math.floor(currentDateMilliseconds / 1000);
+
   const {data: user} = useQuery({
     queryKey: ['user'],
     queryFn: () => getUserByEmail(auth.currentUser.email),
@@ -46,8 +50,8 @@ const MyPage = () => {
   const {data: boughtItems} = useQuery({
     queryKey: ['bouthItems', user?.items],
     queryFn: () => getItmesByTargetIds(user?.items),
-    // enabled: user?.items.length > 0,
   });
+
   const queryClient = useQueryClient();
   const {mutate: mutateToUpdateUser} = useMutation({
     mutationFn: () =>
@@ -136,8 +140,18 @@ const MyPage = () => {
             writtenPolls?.map(poll => (
               <StMyPollContainer key={poll.id}>
                 <Link to={`/poll/${poll.id}`}>
-                  <img src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
-                  <img src={DEFAULT_IMAGE} alt="설문 썸네일" />
+                  {currentDateSeconds > poll.dueDate?.seconds ? (
+                    <>
+                      <StImgContainer>
+                        <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
+                        <StFinishedPollImg src={finishedPoll} alt="종료된 설문" />
+                      </StImgContainer>
+                    </>
+                  ) : (
+                    <StImgContainer>
+                      <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
+                    </StImgContainer>
+                  )}
                   <div>{poll.title}</div>
                 </Link>
                 {isDownloadFending ? (
@@ -159,10 +173,13 @@ const MyPage = () => {
             submitPolls?.map((poll, index) => (
               <StMyPollContainer key={index}>
                 <Link to={`/poll/${poll.id}`}>
-                  <img src={poll.thumbnail ?? DEFAULT_IMAGE} />
+                  <StImgContainer>
+                    <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
+                  </StImgContainer>
+
                   <div> {poll.nickname}</div>
                   <div>{poll.title}</div>
-                  <div>{poll.point}p</div>
+                  <StPoint>{poll.point}p</StPoint>
                 </Link>
               </StMyPollContainer>
             ))
@@ -177,7 +194,9 @@ const MyPage = () => {
           ) : (
             boughtItems?.map((item, index) => (
               <StMyPollContainer key={index}>
-                <img src={item.imageUrl} />
+                <StImgContainer>
+                  <StPollImg src={item.imageUrl} />
+                </StImgContainer>
                 <div> {item.name}</div>
                 <div>{item.point}p</div>
               </StMyPollContainer>
@@ -219,12 +238,13 @@ const StPollsContainer = styled.div`
   margin: 20px 0px;
   padding-bottom: 20px;
   box-shadow: 0px 8px 16px 0px #00000033;
-  & img {
+  /* & img {
+    position: relative;
     width: 200px;
     height: 200px;
     border-radius: 20px;
     box-shadow: 0px 8px 16px 0px #00000033;
-  }
+  } */
 `;
 
 const StContainer = styled.div`
@@ -248,11 +268,13 @@ const StMyPollContainer = styled.div`
   ${ColumnCenter}
   gap: 15px;
   text-align: center;
+
   & div {
     width: 250px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-top: 3px;
   }
 `;
 
@@ -284,4 +306,32 @@ const StBtns = styled.div`
   gap: 20px;
   justify-content: center;
   width: 100%;
+`;
+
+const StPollImg = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 20px; /* 이미지에 원하는 형태의 라운드 코너를 적용 */
+  object-fit: cover; /* 이미지가 컨테이너에 맞게 비율 유지하며 덮어쓰도록 설정 */
+`;
+
+const StFinishedPollImg = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px; /* 이미지에 원하는 형태의 라운드 코너를 적용 */
+  object-fit: cover; //이미지가 컨테이너에 맞게 비율 유지하며 덮어쓰도록 설정
+  opacity: 0.7; /* 덮어쓰는 이미지의 투명도 조절 */
+`;
+
+const StImgContainer = styled.div`
+  position: relative;
+  width: 200px; /* 원하는 이미지 너비로 조절 */
+  height: 200px; /* 원하는 이미지 높이로 조절 */
+`;
+
+const StPoint = styled.div`
+  font-size: 16px;
 `;
