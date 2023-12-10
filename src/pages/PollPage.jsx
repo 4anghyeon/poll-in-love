@@ -83,7 +83,7 @@ const PollPage = () => {
       if (poll.gender !== 'none' && poll.gender !== user.gender) {
         setIsInvalid(true);
       }
-      if (poll.age !== 0 && +poll.age !== user.age) {
+      if (+poll.age !== 0 && +poll.age !== +user.age) {
         setIsInvalid(true);
       }
     }
