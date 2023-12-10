@@ -152,7 +152,7 @@ const MyPage = () => {
       <StPollsContainer>
         <StTitle>참여한 설문</StTitle>
         <StWrapper>
-          {submitPolls?.length === 0 ? (
+          {submitPolls === undefined ? (
             <div>아직 참여한 설문이 없어요!</div>
           ) : (
             submitPolls?.map((poll, index) => (
