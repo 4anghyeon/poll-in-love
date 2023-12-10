@@ -182,7 +182,8 @@ const StEnrollContainer = styled.div`
   ${() => ColumnCenter};
   padding: 10px 1rem 10px 1rem;
   width: 100%;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 130px);
+  overflow-y: auto;
 `;
 
 const StContentContainer = styled.section`
