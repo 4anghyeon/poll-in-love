@@ -12,6 +12,8 @@ import {useQuery} from '@tanstack/react-query';
 import {getUserByEmail} from 'api/users';
 import {MdOutlineAddChart} from 'react-icons/md';
 import {TbLogout} from 'react-icons/tb';
+import {toast} from 'react-toastify';
+import TOAST_OPTION from '../../utils/toast-option';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const Header = () => {
 
   const logOutUser = async () => {
     await signOut(auth);
+    toast.error('로그아웃 하였습니다.', {...TOAST_OPTION.topRight, icon: '👋'});
     navigate('/');
   };
 
@@ -107,10 +110,16 @@ const StDiv = styled.div`
   & span {
     color: white;
     font-size: ${theme.FONT_SIZE.lg};
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+
   }
   display: flex;
   align-items: center;
   gap: 20px;
+
 `;
 
 const StList = styled.ul`

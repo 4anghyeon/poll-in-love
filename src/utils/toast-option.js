@@ -9,6 +9,16 @@ const TOAST_OPTION = {
     progress: undefined,
     theme: 'light',
   },
+  topRight: {
+    position: 'top-right',
+    autoClose: 1500,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: false,
+    progress: undefined,
+    theme: 'light',
+  },
   rightBottom: {
     position: 'bottom-right',
     autoClose: 2000,
