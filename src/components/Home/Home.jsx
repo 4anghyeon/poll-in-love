@@ -65,6 +65,7 @@ const Home = () => {
   }, [pollsData, selectedAges, selectedGenders]);
 
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
+
   return (
     <>
       <StMainBox>
