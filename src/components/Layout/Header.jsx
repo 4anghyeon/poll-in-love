@@ -27,7 +27,6 @@ const Header = () => {
 
       if (pathname === '/enroll' || pathname === '/poll') {
         if (!user) {
-          console.log(getAuth().currentUser);
           toast.error('로그인 후 이용해 주세요', TOAST_OPTION.topCenter);
           navigate('/login', {replace: true});
         }

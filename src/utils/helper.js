@@ -5,8 +5,6 @@ import * as XLSX from 'xlsx';
 export const downloadDataAsExcel = async pollId => {
   const pollData = await getPollById(pollId);
   const participantsData = await findParticipantByPollId(pollId);
-  console.log(pollData);
-  console.log(participantsData);
 
   return new Promise((res, rej) => {
     try {
