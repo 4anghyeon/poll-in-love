@@ -4,7 +4,7 @@ import theme from '../../styles/theme';
 import {TYPE} from '../../redux/modules/enrollSlice';
 import {ColumnCenter, Input} from '../../styles/CommonStyles';
 
-const QuestionBox = ({question, index, setAnswer}) => {
+const QuestionBox = ({question, index, setAnswer, isMe}) => {
   const onChangeInput = e => {
     setAnswer(prev => {
       const newAnswer = {...prev};
@@ -22,13 +22,25 @@ const QuestionBox = ({question, index, setAnswer}) => {
         <h1>
           질문 {index + 1}. {question.question}
         </h1>
-        {question.type === TYPE.INPUT && <StAnswerInput placeholder="답변을 입력해주세요." onChange={onChangeInput} />}
+        {question.type === TYPE.INPUT && (
+          <StAnswerInput
+            placeholder={isMe ? '본인이 작성한 설문은 답변할 수 없습니다.' : '답변을 입력해주세요.'}
+            onChange={onChangeInput}
+            disabled={isMe}
+          />
+        )}
         {question.type === TYPE.SELECT && (
           <StRadioButtonContainer>
             {question.answers.map(data => {
               return (
                 <label key={data.id}>
-                  <input type="radio" name={question.id} value={`${data.answer}`} onChange={onChangeInput} />
+                  <input
+                    type="radio"
+                    name={question.id}
+                    value={`${data.answer}`}
+                    onChange={onChangeInput}
+                    disabled={isMe}
+                  />
                   <span>{data.answer}</span>
                 </label>
               );

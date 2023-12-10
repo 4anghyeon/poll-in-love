@@ -1,5 +1,5 @@
 import React from 'react';
-import {createBrowserRouter, redirect, RouterProvider} from 'react-router-dom';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import HomePage from '../pages/HomePage';
 import EnrollPage from '../pages/EnrollPage';
@@ -9,9 +9,6 @@ import SignUpPage from 'pages/SignUpPage';
 import PollPage from '../pages/PollPage';
 import {getPollById} from '../api/polls';
 import MyPage from 'pages/MyPage';
-import {auth} from './firebase/firebase';
-import {toast} from 'react-toastify';
-import TOAST_OPTION from '../utils/toast-option';
 
 const router = createBrowserRouter([
   {
@@ -41,11 +38,7 @@ const router = createBrowserRouter([
         // 설문 참여
         path: 'poll/:id',
         element: <PollPage />,
-        loader: ({params}) => {
-          if (!auth.currentUser) {
-            toast.error('로그인 후 이용할 수 있습니다!', TOAST_OPTION);
-            return redirect('/login');
-          }
+        loader: async ({params}) => {
           return getPollById(params.id);
         },
       },
