@@ -69,7 +69,7 @@ const Home = () => {
     <>
       <StMainBox>
         <StTitleBox>
-          <h1>오늘의 PICK</h1>
+          <h1>오늘의 PICK..☆</h1>
         </StTitleBox>
 
         <StPickBox>
@@ -89,13 +89,15 @@ const Home = () => {
           ))}
         </StPickBox>
         <StTitleBox>
-          <h1>SHOP RANKING</h1>
+          <h1>인기 상품🎁</h1>
         </StTitleBox>
-        {/*메달달기 */}
         <StShopBox>
           {hotItems.map((item, index) => (
             <Link to="/shop" key={index}>
               <StShopCard>
+                <StBestBox>
+                  <span>{index + 1}위</span>
+                </StBestBox>
                 <StShopImg src={item.imageUrl} />
                 <StShopTitle>{item.name}</StShopTitle>
                 <StShopPrice>{item.point}p</StShopPrice>
@@ -285,8 +287,8 @@ const StShopBox = styled.div`
 const StShopCard = styled.div`
   ${() => ColumnCenter}
   width: 230px;
-  border-radius: 200px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 10px;
   margin: 20px 20px 50px 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: ${theme.COLOR.purple};
@@ -470,4 +472,18 @@ const StyledSelect = styled(Select)`
     color: white;
     border-radius: 0;
   }
+`;
+
+const StBestBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  background-color: ${theme.COLOR.pink};
+  padding: 7px;
+  border-radius: 100px;
 `;
