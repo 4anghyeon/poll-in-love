@@ -30,5 +30,5 @@
 | 이름  | GitHub | 블로그 | 
 |:---:|--------------|------|
 | 이상현  | https://github.com/4anghyeon | https://velog.io/@sanghyeon | 
-| 천영륜  | https://github.com/nuny0831 | https://github.com/nuny0831 |    
+| 천영륜  | https://github.com/nuny0831 | https://forme31.tistory.com |    
 | 한혜원  | https://github.com/hyewon-han | https://velog.io/@hw1635 | 

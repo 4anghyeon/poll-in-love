@@ -141,12 +141,10 @@ const MyPage = () => {
               <StMyPollContainer key={poll.id}>
                 <Link to={`/poll/${poll.id}`}>
                   {currentDateSeconds > poll.dueDate?.seconds ? (
-                    <>
-                      <StImgContainer>
-                        <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
-                        <StFinishedPollImg src={finishedPoll} alt="종료된 설문" />
-                      </StImgContainer>
-                    </>
+                    <StImgContainer>
+                      <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />
+                      <StFinishedPollImg src={finishedPoll} alt="종료된 설문" />
+                    </StImgContainer>
                   ) : (
                     <StImgContainer>
                       <StPollImg src={poll.thumbnail ?? DEFAULT_IMAGE} alt="설문 썸네일" />

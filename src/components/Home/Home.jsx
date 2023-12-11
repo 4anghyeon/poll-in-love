@@ -67,103 +67,101 @@ const Home = () => {
   if (isLoadingPolls || isLoadingItems) return <BarLoader color={theme.COLOR.pink} height={10} width={300} />;
 
   return (
-    <>
-      <StMainBox>
-        <StTitleBox>
-          <h1>오늘의 발견💡</h1>
-        </StTitleBox>
-        <StPickBox>
-          {randomPolls.map((poll, index) => (
-            <Link to={`/poll/${poll.id}`} key={index}>
-              <StPickCard>
-                <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
-                <StPickId> {poll.nickname}</StPickId>
-                <StPickTitle>{poll.title}</StPickTitle>
-                <StDueDate>
-                  <FaRegCalendarAlt />
-                  마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
-                </StDueDate>
-                <StPickPoint>{poll.point}p</StPickPoint>
-              </StPickCard>
-            </Link>
-          ))}
-        </StPickBox>
-        <StTitleBox>
-          <h1>인기 상품 🎁</h1>
-        </StTitleBox>
-        <StShopBox>
-          {hotItems.map((item, index) => (
-            <Link to="/shop" key={index}>
-              <StShopCard>
-                <StBestBox>
-                  <span>{index + 1}위</span>
-                </StBestBox>
-                <StShopImg src={item.imageUrl} />
-                <StShopTitle>{item.name}</StShopTitle>
-                <StShopPrice>{item.point}p</StShopPrice>
-              </StShopCard>
-            </Link>
-          ))}
-        </StShopBox>
-        <StSearchBarBox>
-          <StyledSelect
-            options={AGE_OPTIONS.slice(1).map(option => ({
-              value: option.value,
-              label: option.text,
-            }))}
-            isMulti
-            value={selectedAges}
-            onChange={setSelectedAges}
-            placeholder="나이를 선택하세요"
-          />
-          <StyledSelect
-            options={GENDER_OPTIONS.slice(1).map(option => ({
-              value: option.value,
-              label: option.text,
-              color: option.color,
-            }))}
-            isMulti
-            value={selectedGenders}
-            onChange={setSelectedGenders}
-            placeholder="성별을 선택하세요"
-          />
-          <StSearchBar>
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={searchKeyword}
-              onChange={e => setSearchKeyword(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') handleSearch();
-              }}
-            />
-            <button onClick={handleSearch}>검색</button>
-          </StSearchBar>
-        </StSearchBarBox>
-        {allPolls?.map((poll, index) => (
-          <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
-            <StSurveyCard>
-              <StSurveyTitleWrapper>
-                <StSurveyTitle>{poll.title}</StSurveyTitle>
-              </StSurveyTitleWrapper>
-              <StSurveyBottom>
-                <p>질문 개수 {poll.questions.length}개</p>
-                <p>{poll.age === 0 ? '연령대 상관없음' : `연령대 ${poll.age}대`}</p>
-                <p>{poll.gender === 'none' ? '성별 상관없음' : `성별 ${poll.gender === 'male' ? '남성' : '여성'} `}</p>
-                <p>
-                  <FaRegCalendarAlt />
-                  마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
-                </p>
-                <StSurveyPoint>{poll.point}p</StSurveyPoint>
-              </StSurveyBottom>
-            </StSurveyCard>
+    <StMainBox>
+      <StTitleBox>
+        <h1>오늘의 발견💡</h1>
+      </StTitleBox>
+      <StPickBox>
+        {randomPolls.map((poll, index) => (
+          <Link to={`/poll/${poll.id}`} key={index}>
+            <StPickCard>
+              <StPickImg src={poll.thumbnail ?? DEFAULT_IMAGE} />
+              <StPickId> {poll.nickname}</StPickId>
+              <StPickTitle>{poll.title}</StPickTitle>
+              <StDueDate>
+                <FaRegCalendarAlt />
+                마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
+              </StDueDate>
+              <StPickPoint>{poll.point}p</StPickPoint>
+            </StPickCard>
           </Link>
         ))}
-        <StButtonBox>
-          <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
-        </StButtonBox>
-      </StMainBox>
-    </>
+      </StPickBox>
+      <StTitleBox>
+        <h1>인기 상품 🎁</h1>
+      </StTitleBox>
+      <StShopBox>
+        {hotItems.map((item, index) => (
+          <Link to="/shop" key={index}>
+            <StShopCard>
+              <StBestBox>
+                <span>{index + 1}위</span>
+              </StBestBox>
+              <StShopImg src={item.imageUrl} />
+              <StShopTitle>{item.name}</StShopTitle>
+              <StShopPrice>{item.point}p</StShopPrice>
+            </StShopCard>
+          </Link>
+        ))}
+      </StShopBox>
+      <StSearchBarBox>
+        <StyledSelect
+          options={AGE_OPTIONS.slice(1).map(option => ({
+            value: option.value,
+            label: option.text,
+          }))}
+          isMulti
+          value={selectedAges}
+          onChange={setSelectedAges}
+          placeholder="나이를 선택하세요"
+        />
+        <StyledSelect
+          options={GENDER_OPTIONS.slice(1).map(option => ({
+            value: option.value,
+            label: option.text,
+            color: option.color,
+          }))}
+          isMulti
+          value={selectedGenders}
+          onChange={setSelectedGenders}
+          placeholder="성별을 선택하세요"
+        />
+        <StSearchBar>
+          <input
+            type="text"
+            placeholder="검색어를 입력하세요"
+            value={searchKeyword}
+            onChange={e => setSearchKeyword(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleSearch();
+            }}
+          />
+          <button onClick={handleSearch}>검색</button>
+        </StSearchBar>
+      </StSearchBarBox>
+      {allPolls?.map((poll, index) => (
+        <Link to={`/poll/${poll.id}`} key={index} state={{poll}}>
+          <StSurveyCard>
+            <StSurveyTitleWrapper>
+              <StSurveyTitle>{poll.title}</StSurveyTitle>
+            </StSurveyTitleWrapper>
+            <StSurveyBottom>
+              <p>질문 개수 {poll.questions.length}개</p>
+              <p>{poll.age === 0 ? '연령대 상관없음' : `연령대 ${poll.age}대`}</p>
+              <p>{poll.gender === 'none' ? '성별 상관없음' : `성별 ${poll.gender === 'male' ? '남성' : '여성'} `}</p>
+              <p>
+                <FaRegCalendarAlt />
+                마감 기한: {moment.unix(poll.dueDate?.seconds).format(DEFAULT_TIME_FORMAT)}
+              </p>
+              <StSurveyPoint>{poll.point}p</StSurveyPoint>
+            </StSurveyBottom>
+          </StSurveyCard>
+        </Link>
+      ))}
+      <StButtonBox>
+        <Button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>TOP</Button>
+      </StButtonBox>
+    </StMainBox>
   );
 };
 
@@ -555,5 +553,5 @@ const StButtonBox = styled.div`
   height: 100%;
   position: sticky;
   bottom: 20px;
-  margin-left: 120px;
+  padding-right: 60px;
 `;
