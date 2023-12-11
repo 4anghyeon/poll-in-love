@@ -30,15 +30,18 @@
 ### 로그인 / 회원 가입
 
 - firebase Auth를 활용하여 로그인, 회원가입 및 소셜 로그인이 가능합니다.
+
   <img src="./src/assets/images/pollInLove-01.png">
 
 ### 메인 페이지
 
 - <오늘의 발견> 섹션에서는 랜덤으로 설문 4개를 보여줍니다.
+
   <img src="./src/assets/images/pollInLove-02.png">
 
 - <인기 상품> 섹션에서는 판매량이 높은 순으로 1위부터 5위까지의 상품을 보여줍니다.
 - <검색> 섹션에서는 연령대, 성별, 제목으로 설문 검색이 가능합니다.
+
   <img src="./src/assets/images/pollInLove-03.png">
 
 ### 설문 등록
@@ -47,19 +50,23 @@
   <img src="./src/assets/images/pollInLove-04.png">
 
 - 설문을 등록하는 사용자는 연령대 및 성별에 따른 참여자 조건, 참여시 지급할 포인트, 만료일 등을 설정할 수 있습니다.
+
   <img src="./src/assets/images/pollInLove-05.png">
 
 ### 포인트 상점
 
 - 설문에 참여하는 사용자는 설문 참여를 통해 획득한 포인트를 포인트 상점에서 상품으로 교환할 수 있습니다.
+
   <img src="./src/assets/images/pollInLove-06.png">
 
 - 유튜브 광고 보기를 통해 포인트를 얻을 수도 있습니다.
+
   <img src="./src/assets/images/pollInLove-07.png">
 
 ### 마이 페이지
 
 - 사용자는 마이페이지에서 회원정보 수정이 가능하며, 작성한 설문에 대한 결과는 xlsx 파일로 다운로드 받을 수 있습니다.
+
   <img src="./src/assets/images/pollInLove-08.png">
 
 ## 팀원 소개
