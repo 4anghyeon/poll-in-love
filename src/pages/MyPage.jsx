@@ -309,8 +309,9 @@ const StBtns = styled.div`
 const StPollImg = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 20px; /* 이미지에 원하는 형태의 라운드 코너를 적용 */
-  object-fit: cover; /* 이미지가 컨테이너에 맞게 비율 유지하며 덮어쓰도록 설정 */
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0px 8px 16px 0px #00000033;
 `;
 
 const StFinishedPollImg = styled.img`
@@ -319,15 +320,15 @@ const StFinishedPollImg = styled.img`
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 20px; /* 이미지에 원하는 형태의 라운드 코너를 적용 */
-  object-fit: cover; //이미지가 컨테이너에 맞게 비율 유지하며 덮어쓰도록 설정
-  opacity: 0.7; /* 덮어쓰는 이미지의 투명도 조절 */
+  border-radius: 20px;
+  object-fit: cover;
+  opacity: 0.7;
 `;
 
 const StImgContainer = styled.div`
   position: relative;
-  width: 200px; /* 원하는 이미지 너비로 조절 */
-  height: 200px; /* 원하는 이미지 높이로 조절 */
+  width: 200px;
+  height: 200px;
 `;
 
 const StPoint = styled.div`
